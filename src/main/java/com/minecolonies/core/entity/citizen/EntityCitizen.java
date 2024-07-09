@@ -70,13 +70,16 @@ import com.minecolonies.core.util.TeleportHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.CombatRules;
@@ -238,6 +241,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
      * Our entities threat list
      */
     private final ThreatTable threatTable         = new ThreatTable<>(this);
+    private final TagKey<Item> hideCitizenData = new TagKey<Item>(Registries.ITEM, new ResourceLocation(MOD_ID, "hide_citizen_data"));
     private       int         interactionCooldown = 0;
 
     /**
@@ -401,7 +405,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
             return result;
         }
 
-        if (CompatibilityUtils.getWorldFromCitizen(this).isClientSide && iColonyView != null)
+        if (CompatibilityUtils.getWorldFromCitizen(this).isClientSide && iColonyView != null && !(!ItemStackUtils.isEmpty(player.getItemInHand(hand)) && player.getItemInHand(hand).is(hideCitizenData)))
         {
             if (player.isShiftKeyDown() && !isInvisible())
             {
