@@ -984,6 +984,20 @@ public class RaidManager implements IRaiderManager
         passingThroughRaidTime = colony.getWorld().getGameTime() + TICKS_SECOND * 20;
     }
 
+
+    @Override
+    public void setPassThroughRaidTime(Integer ticks)
+    {
+        passingThroughRaidTime = colony.getWorld().getGameTime() + ticks;
+    }
+
+    @Override
+    public Long getPassThroughRaidTime()
+    {
+        return passingThroughRaidTime;
+    }
+
+
     /**
      * Gets all raid histories
      * @return

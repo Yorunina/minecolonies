@@ -8,6 +8,7 @@ import com.minecolonies.api.entity.ai.statemachine.AITarget;
 import com.minecolonies.api.entity.ai.statemachine.states.AIBlockingEventType;
 import com.minecolonies.api.entity.ai.statemachine.states.CitizenAIState;
 import com.minecolonies.api.entity.ai.statemachine.states.IState;
+import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenColonyHandler;
 import com.minecolonies.api.util.CompatibilityUtils;
@@ -21,11 +22,13 @@ import com.minecolonies.core.colony.jobs.JobPupil;
 import com.minecolonies.core.entity.ai.minimal.*;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.monster.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.minecolonies.api.entity.citizen.AbstractEntityCitizen.ENTITY_AI_TICKRATE;
 import static com.minecolonies.api.entity.citizen.VisibleCitizenStatus.*;
@@ -143,6 +146,35 @@ public class CitizenAI implements IStateAI
 
             return CitizenAIState.WORK;
         }
+
+//        CompoundTag citizenNbt = citizen.serializeNBT();
+//        if (citizenNbt.contains("KubeJSPersistentData") && citizenNbt.getCompound("KubeJSPersistentData").contains("forceStatus")) {
+//            String forceStatus = citizenNbt.getCompound("KubeJSPersistentData").getString("forceStatus");
+//            switch (forceStatus) {
+//                case "IDLE":
+//                    return CitizenAIState.IDLE;
+//                case "FLEE":
+//                    return CitizenAIState.FLEE;
+//                case "EATING":
+//                    return CitizenAIState.EATING;
+//                case "SICK":
+//                    citizen.getCitizenData().setVisibleStatus(VisibleCitizenStatus.SICK);
+//                    return CitizenAIState.SICK;
+//                case "RAID":
+//                    citizen.getCitizenData().triggerInteraction(new StandardInteraction(Component.translatable(COM_MINECOLONIES_COREMOD_ENTITY_CITIZEN_RAID), ChatPriority.IMPORTANT));
+//                    citizen.setVisibleStatusIfNone(RAIDED);
+//                    return CitizenAIState.SLEEP;
+//                case "MOURN":
+//                    return CitizenAIState.MOURN;
+//                case "WORK":
+//                    return CitizenAIState.WORK;
+//                case "WORKING":
+//                    return CitizenAIState.WORKING;
+//                case "SLEEP":
+//                    citizen.getCitizenData().onGoSleep();
+//                    return CitizenAIState.SLEEP;
+//            }
+//        }
 
         // Sick at hospital
         if (citizen.getCitizenDiseaseHandler().isSick() && citizen.getCitizenDiseaseHandler().sleepsAtHospital())
