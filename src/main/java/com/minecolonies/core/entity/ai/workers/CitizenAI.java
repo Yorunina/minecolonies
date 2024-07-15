@@ -147,34 +147,24 @@ public class CitizenAI implements IStateAI
             return CitizenAIState.WORK;
         }
 
-//        CompoundTag citizenNbt = citizen.serializeNBT();
-//        if (citizenNbt.contains("KubeJSPersistentData") && citizenNbt.getCompound("KubeJSPersistentData").contains("forceStatus")) {
-//            String forceStatus = citizenNbt.getCompound("KubeJSPersistentData").getString("forceStatus");
-//            switch (forceStatus) {
-//                case "IDLE":
-//                    return CitizenAIState.IDLE;
-//                case "FLEE":
-//                    return CitizenAIState.FLEE;
-//                case "EATING":
-//                    return CitizenAIState.EATING;
-//                case "SICK":
-//                    citizen.getCitizenData().setVisibleStatus(VisibleCitizenStatus.SICK);
-//                    return CitizenAIState.SICK;
-//                case "RAID":
-//                    citizen.getCitizenData().triggerInteraction(new StandardInteraction(Component.translatable(COM_MINECOLONIES_COREMOD_ENTITY_CITIZEN_RAID), ChatPriority.IMPORTANT));
-//                    citizen.setVisibleStatusIfNone(RAIDED);
-//                    return CitizenAIState.SLEEP;
-//                case "MOURN":
-//                    return CitizenAIState.MOURN;
-//                case "WORK":
-//                    return CitizenAIState.WORK;
-//                case "WORKING":
-//                    return CitizenAIState.WORKING;
-//                case "SLEEP":
-//                    citizen.getCitizenData().onGoSleep();
-//                    return CitizenAIState.SLEEP;
-//            }
-//        }
+        CompoundTag citizenNbt = citizen.serializeNBT();
+        CompoundTag kjsPersistentData = new CompoundTag();
+        if (citizenNbt.contains("KubeJSPersistentData")) {
+            kjsPersistentData = citizenNbt.getCompound("KubeJSPersistentData");
+        }
+        if ("guardLike".equals(kjsPersistentData.getString("status"))) {
+            if (shouldEat())
+            {
+                return CitizenAIState.EATING;
+            }
+            // Sick
+            if (citizen.getCitizenDiseaseHandler().isSick() || citizen.getCitizenDiseaseHandler().isHurt())
+            {
+                citizen.getCitizenData().setVisibleStatus(VisibleCitizenStatus.SICK);
+                return CitizenAIState.SICK;
+            }
+            return CitizenAIState.WORK;
+        }
 
         // Sick at hospital
         if (citizen.getCitizenDiseaseHandler().isSick() && citizen.getCitizenDiseaseHandler().sleepsAtHospital())

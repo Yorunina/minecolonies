@@ -38,12 +38,12 @@ public class WindowPostBox extends AbstractWindowRequestTree
     /**
      * String which displays full delivery.
      */
-    private static final String RED_X = "No";
+    private static final String RED_X = "§n§4X";
 
     /**
      * String which displays partial delivery..
      */
-    private static final String APPROVE = "Yes";
+    private static final String APPROVE = "✓";
 
     /**
      * List of all item stacks in the game.
