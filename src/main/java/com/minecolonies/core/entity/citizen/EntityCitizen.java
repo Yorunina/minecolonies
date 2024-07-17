@@ -114,6 +114,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.minecolonies.api.research.util.ResearchConstants.*;
 import static com.minecolonies.api.util.ItemStackUtils.ISFOOD;
@@ -1643,7 +1644,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
             citizenColonyHandler.getColony().getCitizenManager().removeCivilian(getCitizenData());
 
             final String deathCause =
-              Component.literal(damageSource.getLocalizedDeathMessage(this).getString()).getString().replaceFirst(this.getDisplayName().getString(), "Citizen");
+              Component.literal(damageSource.getLocalizedDeathMessage(this).getString()).getString().replaceFirst(Pattern.quote(this.getDisplayName().getString()), "Citizen");
             citizenColonyHandler.getColony().getEventDescriptionManager().addEventDescription(new CitizenDiedEvent(blockPosition(), citizenData.getName(), deathCause));
 
             MinecraftForge.EVENT_BUS.post(new CitizenRemovedEvent(citizenData, damageSource));
