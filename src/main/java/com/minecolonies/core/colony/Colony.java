@@ -332,6 +332,11 @@ public class Colony implements IColony
      */
     private int day = 0;
 
+    /**
+     * A force status to describe colony status
+     */
+    private String colonyForceStatus = "none";
+
     private final SettingsModule settingsModule = (SettingsModule) BuildingEntry.produceModuleWithoutBuilding(BuildingModules.TOWNHALL_SETTINGS.key);
 
     /**
@@ -1958,5 +1963,17 @@ public class Colony implements IColony
     public ISettingsModule getSettings()
     {
         return settingsModule;
+    }
+
+    @Override
+    public String getColonyForceStatus()
+    {
+        return colonyForceStatus;
+    }
+
+    @Override
+    public void setColonyForceStatus(final String status)
+    {
+        this.colonyForceStatus = status;
     }
 }

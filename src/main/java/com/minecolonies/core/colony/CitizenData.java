@@ -327,6 +327,11 @@ public class CitizenData implements ICitizenData
     private UUID textureUUID;
 
     /**
+     * special force status to control entity AI
+     */
+    private String forceStatus = "none";
+
+    /**
      * Create a CitizenData given an ID. Used as a super-constructor or during loading.
      *
      * @param id     ID of the Citizen.
@@ -382,6 +387,18 @@ public class CitizenData implements ICitizenData
     public void setVoiceProfile(final int profile)
     {
         this.voiceProfile = profile;
+    }
+
+    @Override
+    public String getForceStatus()
+    {
+        return forceStatus;
+    }
+
+    @Override
+    public void setForceStatus(final String status)
+    {
+        this.forceStatus = status;
     }
 
     @Override

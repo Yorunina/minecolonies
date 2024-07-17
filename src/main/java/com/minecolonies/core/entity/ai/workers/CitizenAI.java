@@ -28,6 +28,7 @@ import net.minecraft.world.entity.monster.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.minecolonies.api.entity.citizen.AbstractEntityCitizen.ENTITY_AI_TICKRATE;
@@ -147,12 +148,7 @@ public class CitizenAI implements IStateAI
             return CitizenAIState.WORK;
         }
 
-        CompoundTag citizenNbt = citizen.serializeNBT();
-        CompoundTag kjsPersistentData = new CompoundTag();
-        if (citizenNbt.contains("KubeJSPersistentData")) {
-            kjsPersistentData = citizenNbt.getCompound("KubeJSPersistentData");
-        }
-        if ("guardLike".equals(kjsPersistentData.getString("status"))) {
+        if (Objects.equals(citizen.getCitizenData().getForceStatus(), "guardLike") || Objects.equals(citizen.getCitizenData().getColony().getColonyForceStatus(), "emergencyProtocol")) {
             if (shouldEat())
             {
                 return CitizenAIState.EATING;

@@ -490,4 +490,12 @@ public interface IColony
      * @return the cit.
      */
     ICitizen getCitizen(int id);
+
+    String getColonyForceStatus();
+
+    /**
+     * Set the forceStatus of the citizen.
+     * @param status
+     */
+    void setColonyForceStatus(final String status);
 }

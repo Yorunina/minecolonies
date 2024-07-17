@@ -1588,4 +1588,14 @@ public final class ColonyView implements IColonyView
     {
         return this.questManager;
     }
+
+
+    @Override
+    public String getColonyForceStatus()
+    {
+        return null;
+    }
+
+    @Override
+    public void setColonyForceStatus(final String status) {}
 }
