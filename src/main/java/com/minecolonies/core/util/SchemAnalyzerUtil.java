@@ -14,6 +14,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.Tags;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.minecolonies.api.util.BlockStateUtils.getPropertyByName;
 import static com.minecolonies.core.util.DomumOrnamentumUtils.DO_NBT_TEXTURE_DATA;
 import static com.minecolonies.core.util.DomumOrnamentumUtils.DO_NBT_TYPE;
 
@@ -163,10 +165,10 @@ public class SchemAnalyzerUtil
 
                     result.getOrCreateTag().put(DO_NBT_TEXTURE_DATA, blockInfo.getTileEntityData().getCompound(DO_NBT_TEXTURE_DATA));
                 }
-
-                if (blockNbt != null && blockNbt.contains(DO_NBT_TYPE, Tag.TAG_STRING))
+                final Property<?> typeProperty =  getPropertyByName(blockInfo.getState().getProperties(), DO_NBT_TYPE);
+                if (blockNbt != null && typeProperty != null)
                 {
-                    result.getOrCreateTag().putString(DO_NBT_TYPE, blockNbt.getString(DO_NBT_TYPE));
+                    result.getOrCreateTag().putString(DO_NBT_TYPE, blockInfo.getState().getValue(typeProperty).toString());
                 }
 
                 storage = new ItemStorage(result);
