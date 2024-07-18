@@ -529,6 +529,8 @@ public class CitizenData implements ICitizenData
         textureId = random.nextInt(255);
 
         saturation = MAX_SATURATION;
+        disableTakeOffArmor = false;
+        forceStatus = "none";
         final int levelCap = (int) colony.getOverallHappiness();
 
         citizenSkillHandler.init(levelCap);
@@ -1259,7 +1261,8 @@ public class CitizenData implements ICitizenData
             BlockPosUtil.write(nbtTagCompound, TAG_RESPAWN_POS, nextRespawnPos);
         }
         nbtTagCompound.putDouble(TAG_SATURATION, saturation);
-
+        nbtTagCompound.putBoolean(TAG_DISABLE_TAKEOFF_ARMOR, disableTakeOffArmor);
+        nbtTagCompound.putString(TAG_FORCE_STATUS, forceStatus);
         if (job != null)
         {
             @NotNull final Tag jobCompound = job.serializeNBT();
@@ -1381,6 +1384,8 @@ public class CitizenData implements ICitizenData
         citizenSkillHandler.read(nbtTagCompound.getCompound(TAG_NEW_SKILLS));
 
         saturation = nbtTagCompound.getDouble(TAG_SATURATION);
+        disableTakeOffArmor = nbtTagCompound.getBoolean(TAG_DISABLE_TAKEOFF_ARMOR);
+        forceStatus = nbtTagCompound.getString(TAG_FORCE_STATUS);
 
         if (nbtTagCompound.contains("job"))
         {

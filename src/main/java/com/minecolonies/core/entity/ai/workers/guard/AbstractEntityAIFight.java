@@ -293,6 +293,7 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
                     final ItemStack current = worker.getInventoryCitizen().getArmorInSlot(item.getType());
                     if (!current.isEmpty() && current.getItem() instanceof ArmorItem)
                     {
+                        if (!worker.getCitizenData().getDisableTakeOffArmor()) continue;
                         final int currentLevel = ItemStackUtils.getMiningLevel(current, item.getItemNeeded());
                         final int newLevel = ItemStackUtils.getMiningLevel(worker.getInventoryCitizen().getStackInSlot(slot), item.getItemNeeded());
                         if (currentLevel > newLevel)

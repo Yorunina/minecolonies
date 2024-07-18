@@ -732,6 +732,8 @@ public class Colony implements IColony
 
         mercenaryLastUse = compound.getLong(TAG_MERCENARY_TIME);
         additionalChildTime = compound.getInt(TAG_CHILD_TIME);
+        disableMourn = compound.getBoolean(TAG_DISABLE_MOURN);
+        underEmergencyProtocol = compound.getBoolean(TAG_UNDER_EMERGENCY_PROTOCOL);
 
         // Permissions
         permissions.loadPermissions(compound);
@@ -881,6 +883,8 @@ public class Colony implements IColony
         compound.putLong(TAG_MERCENARY_TIME, mercenaryLastUse);
 
         compound.putInt(TAG_CHILD_TIME, additionalChildTime);
+        compound.putBoolean(TAG_DISABLE_MOURN, disableMourn);
+        compound.putBoolean(TAG_UNDER_EMERGENCY_PROTOCOL, underEmergencyProtocol);
 
         // Permissions
         permissions.savePermissions(compound);

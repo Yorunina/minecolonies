@@ -71,6 +71,10 @@ public final class NbtTagConstants
     public static final String TAG_PAUSED                 = "paused";
     public static final String TAG_CHILD                  = "child";
     public static final String TAG_CHILD_TIME             = "childTime";
+
+    public static final String TAG_DISABLE_MOURN             = "disableMourn";
+
+    public static final String TAG_UNDER_EMERGENCY_PROTOCOL             = "underEmergencyProtocol";
     public static final String TAG_JUST_ATE       = "justAte";
     public static final String TAG_EXPLOSIONS     = "Explosions";
     public static final String TAG_FIREWORKS      = "Fireworks";
@@ -473,6 +477,10 @@ public final class NbtTagConstants
     public static final String TAG_EXPERIENCE   = "experience";
     public static final String TAG_NEW_SKILLS   = "newSkills";
     public static final String TAG_SATURATION   = "saturation";
+
+    public static final String TAG_DISABLE_TAKEOFF_ARMOR   = "disableTakeOffArmor";
+
+    public static final String TAG_FORCE_STATUS   = "forceStatus";
     public static final String TAG_ASLEEP       = "asleep";
     public static final String TAG_CHAT_OPTION  = "chatoption";
     public static final String TAG_CHAT_OPTIONS = "chatoptions";
