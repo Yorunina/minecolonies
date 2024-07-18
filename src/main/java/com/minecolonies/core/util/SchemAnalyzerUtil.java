@@ -8,6 +8,8 @@ import com.ldtteam.structurize.blueprints.v1.Blueprint;
 import com.ldtteam.structurize.util.BlockInfo;
 import com.minecolonies.api.blocks.AbstractBlockHut;
 import com.minecolonies.api.items.ModTags;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +22,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.minecolonies.core.util.DomumOrnamentumUtils.DO_NBT_TEXTURE_DATA;
+import static com.minecolonies.core.util.DomumOrnamentumUtils.DO_NBT_TYPE;
 
 public class SchemAnalyzerUtil
 {
@@ -144,7 +147,8 @@ public class SchemAnalyzerUtil
 
             if (DomumOrnamentumUtils.isDoBlock(block) && blockInfo.hasTileEntityData())
             {
-                final MaterialTextureData textureData = DomumOrnamentumUtils.getTextureDataFromNBT(blockInfo.getTileEntityData());
+                CompoundTag blockNbt = blockInfo.getTileEntityData();
+                final MaterialTextureData textureData = DomumOrnamentumUtils.getTextureDataFromNBT(blockNbt);
                 final ItemStack result = new ItemStack(block);
                 if (textureData != null)
                 {
@@ -158,6 +162,11 @@ public class SchemAnalyzerUtil
                     blockComplexity = Math.max(2, doComplexity / 3);
 
                     result.getOrCreateTag().put(DO_NBT_TEXTURE_DATA, blockInfo.getTileEntityData().getCompound(DO_NBT_TEXTURE_DATA));
+                }
+
+                if (blockNbt != null && blockNbt.contains(DO_NBT_TYPE, Tag.TAG_STRING))
+                {
+                    result.getOrCreateTag().putString(DO_NBT_TYPE, blockNbt.getString(DO_NBT_TYPE));
                 }
 
                 storage = new ItemStorage(result);

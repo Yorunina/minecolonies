@@ -23,6 +23,8 @@ public class DomumOrnamentumUtils
      */
     public static String DO_NBT_TEXTURE_DATA = "textureData";
 
+    public static String DO_NBT_TYPE = "type";
+
     /**
      * Extracts the Domum Ornamentum block type from the stack.
      *
