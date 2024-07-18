@@ -1591,11 +1591,20 @@ public final class ColonyView implements IColonyView
 
 
     @Override
-    public String getColonyForceStatus()
+    public boolean getUnderEmergencyProtocol()
     {
-        return null;
+        return false;
     }
 
     @Override
-    public void setColonyForceStatus(final String status) {}
+    public void setUnderEmergencyProtocol(final boolean status) {}
+
+    @Override
+    public boolean getDisableMourn()
+    {
+        return false;
+    }
+
+    @Override
+    public void setDisableMourn(final boolean status) {}
 }

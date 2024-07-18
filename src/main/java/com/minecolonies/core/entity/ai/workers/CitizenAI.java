@@ -148,7 +148,7 @@ public class CitizenAI implements IStateAI
             return CitizenAIState.WORK;
         }
 
-        if (Objects.equals(citizen.getCitizenData().getForceStatus(), "guardLike") || Objects.equals(citizen.getCitizenData().getColony().getColonyForceStatus(), "emergencyProtocol")) {
+        if (Objects.equals(citizen.getCitizenData().getForceStatus(), "guardLike") || citizen.getCitizenData().getColony().getUnderEmergencyProtocol()) {
             if (shouldEat())
             {
                 return CitizenAIState.EATING;
@@ -226,7 +226,7 @@ public class CitizenAI implements IStateAI
         }
 
         // Mourning
-        if (citizen.getCitizenData().getCitizenMournHandler().isMourning())
+        if (citizen.getCitizenData().getCitizenMournHandler().isMourning() && !citizen.getCitizenColonyHandler().getColony().getDisableMourn())
         {
             if (lastState != CitizenAIState.MOURN)
             {
