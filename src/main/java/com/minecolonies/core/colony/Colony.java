@@ -284,8 +284,8 @@ public class Colony implements IColony
      * The colony flag, as a list of patterns.
      */
     private ListTag colonyFlag = new BannerPattern.Builder()
-      .addPattern(BannerPatterns.BASE, DyeColor.WHITE)
-      .toListTag();
+            .addPattern(BannerPatterns.BASE, DyeColor.WHITE)
+            .toListTag();
 
     /**
      * The last time the mercenaries were used.
@@ -331,6 +331,11 @@ public class Colony implements IColony
      * Current day of the colony.
      */
     private int day = 0;
+
+    /**
+     * A force status to describe colony status
+     */
+    private String colonyForceStatus = "none";
 
     private final SettingsModule settingsModule = (SettingsModule) BuildingEntry.produceModuleWithoutBuilding(BuildingModules.TOWNHALL_SETTINGS.key);
 
@@ -1184,8 +1189,8 @@ public class Colony implements IColony
                     {
                         final Block worldBlock = world.getBlockState(entry.getKey()).getBlock();
                         if (
-                          ((worldBlock != (entry.getValue().getBlock()) && entry.getValue().getBlock() != ModBlocks.blockWayPoint) && worldBlock != ModBlocks.blockConstructionTape)
-                            || (world.isEmptyBlock(entry.getKey().below()) && !BlockUtils.isAnySolid(entry.getValue())))
+                                ((worldBlock != (entry.getValue().getBlock()) && entry.getValue().getBlock() != ModBlocks.blockWayPoint) && worldBlock != ModBlocks.blockConstructionTape)
+                                        || (world.isEmptyBlock(entry.getKey().below()) && !BlockUtils.isAnySolid(entry.getValue())))
                         {
                             wayPoints.remove(entry.getKey());
                             markDirty();
@@ -1715,8 +1720,8 @@ public class Colony implements IColony
                 if (attackingPlayer.addGuard(IEntityCitizen))
                 {
                     MessageUtils.format(COLONY_ATTACK_GUARD_GROUP_SIZE_MESSAGE, attackingPlayer.getPlayer().getName(), attackingPlayer.getGuards().size())
-                      .sendTo(this)
-                      .forManagers();
+                            .sendTo(this)
+                            .forManagers();
                 }
                 return;
             }
@@ -1827,7 +1832,7 @@ public class Colony implements IColony
     public void addLoadedChunk(final long chunkPos, final LevelChunk chunk)
     {
         if (world instanceof ServerLevel
-              && getConfig().getServer().forceLoadColony.get())
+                && getConfig().getServer().forceLoadColony.get())
         {
             if (this.forceLoadTimer > 0)
             {
@@ -1895,8 +1900,8 @@ public class Colony implements IColony
     public String getTextureStyleId()
     {
         if (MineColonies.getConfig().getServer().holidayFeatures.get() &&
-              (LocalDateTime.now().getDayOfMonth() >= 29 && LocalDateTime.now().getMonth() == Month.OCTOBER)
-                 || (LocalDateTime.now().getDayOfMonth() <= 2 && LocalDateTime.now().getMonth() == Month.NOVEMBER))
+                (LocalDateTime.now().getDayOfMonth() >= 29 && LocalDateTime.now().getMonth() == Month.OCTOBER)
+                || (LocalDateTime.now().getDayOfMonth() <= 2 && LocalDateTime.now().getMonth() == Month.NOVEMBER))
         {
             return "nether";
         }
@@ -1958,5 +1963,17 @@ public class Colony implements IColony
     public ISettingsModule getSettings()
     {
         return settingsModule;
+    }
+
+    @Override
+    public String getColonyForceStatus()
+    {
+        return colonyForceStatus;
+    }
+
+    @Override
+    public void setColonyForceStatus(final String status)
+    {
+        this.colonyForceStatus = status;
     }
 }

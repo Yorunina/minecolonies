@@ -8,6 +8,7 @@ import com.minecolonies.api.entity.ai.statemachine.AITarget;
 import com.minecolonies.api.entity.ai.statemachine.states.AIBlockingEventType;
 import com.minecolonies.api.entity.ai.statemachine.states.CitizenAIState;
 import com.minecolonies.api.entity.ai.statemachine.states.IState;
+import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenColonyHandler;
 import com.minecolonies.api.util.CompatibilityUtils;
@@ -21,11 +22,14 @@ import com.minecolonies.core.colony.jobs.JobPupil;
 import com.minecolonies.core.entity.ai.minimal.*;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.monster.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.minecolonies.api.entity.citizen.AbstractEntityCitizen.ENTITY_AI_TICKRATE;
 import static com.minecolonies.api.entity.citizen.VisibleCitizenStatus.*;
@@ -144,6 +148,20 @@ public class CitizenAI implements IStateAI
             return CitizenAIState.WORK;
         }
 
+        if (Objects.equals(citizen.getCitizenData().getForceStatus(), "guardLike") || Objects.equals(citizen.getCitizenData().getColony().getColonyForceStatus(), "emergencyProtocol")) {
+            if (shouldEat())
+            {
+                return CitizenAIState.EATING;
+            }
+            // Sick
+            if (citizen.getCitizenDiseaseHandler().isSick() || citizen.getCitizenDiseaseHandler().isHurt())
+            {
+                citizen.getCitizenData().setVisibleStatus(VisibleCitizenStatus.SICK);
+                return CitizenAIState.SICK;
+            }
+            return CitizenAIState.WORK;
+        }
+
         // Sick at hospital
         if (citizen.getCitizenDiseaseHandler().isSick() && citizen.getCitizenDiseaseHandler().sleepsAtHospital())
         {
@@ -213,9 +231,9 @@ public class CitizenAI implements IStateAI
             if (lastState != CitizenAIState.MOURN)
             {
                 citizen.getCitizenData().triggerInteraction(new StandardInteraction(Component.translatable(COM_MINECOLONIES_COREMOD_ENTITY_CITIZEN_MOURNING,
-                  citizen.getCitizenData().getCitizenMournHandler().getDeceasedCitizens().iterator().next()),
-                  Component.translatable(COM_MINECOLONIES_COREMOD_ENTITY_CITIZEN_MOURNING),
-                  ChatPriority.IMPORTANT));
+                        citizen.getCitizenData().getCitizenMournHandler().getDeceasedCitizens().iterator().next()),
+                        Component.translatable(COM_MINECOLONIES_COREMOD_ENTITY_CITIZEN_MOURNING),
+                        ChatPriority.IMPORTANT));
 
                 citizen.setVisibleStatusIfNone(MOURNING);
             }
@@ -227,7 +245,7 @@ public class CitizenAI implements IStateAI
         {
             citizen.setVisibleStatusIfNone(BAD_WEATHER);
             if (!citizen.getCitizenData().getColony().getRaiderManager().isRaided()
-                  && !citizen.getCitizenData().getCitizenMournHandler().isMourning())
+                    && !citizen.getCitizenData().getCitizenMournHandler().isMourning())
             {
                 citizen.getCitizenData().triggerInteraction(new StandardInteraction(Component.translatable(COM_MINECOLONIES_COREMOD_ENTITY_CITIZEN_RAINING), ChatPriority.HIDDEN));
             }
@@ -278,8 +296,8 @@ public class CitizenAI implements IStateAI
         }
 
         return citizen.getCitizenData().getSaturation() <= CitizenConstants.AVERAGE_SATURATION &&
-                 (citizen.getCitizenData().getSaturation() <= RESTAURANT_LIMIT ||
-                    (citizen.getCitizenData().getSaturation() < LOW_SATURATION && citizen.getHealth() < SEEK_DOCTOR_HEALTH));
+                (citizen.getCitizenData().getSaturation() <= RESTAURANT_LIMIT ||
+                        (citizen.getCitizenData().getSaturation() < LOW_SATURATION && citizen.getHealth() < SEEK_DOCTOR_HEALTH));
     }
 
     /**

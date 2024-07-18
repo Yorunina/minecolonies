@@ -327,6 +327,16 @@ public class CitizenData implements ICitizenData
     private UUID textureUUID;
 
     /**
+     * special force status to control entity AI
+     */
+    private String forceStatus = "none";
+
+    /**
+     * special force status to control entity AI
+     */
+    private boolean shouldTakeOffArmor = true;
+
+    /**
      * Create a CitizenData given an ID. Used as a super-constructor or during loading.
      *
      * @param id     ID of the Citizen.
@@ -382,6 +392,31 @@ public class CitizenData implements ICitizenData
     public void setVoiceProfile(final int profile)
     {
         this.voiceProfile = profile;
+    }
+
+
+
+    @Override
+    public void setShouldTakeOffArmor(final boolean status)
+    {
+        this.shouldTakeOffArmor = status;
+    }
+
+    @Override
+    public boolean getShouldTakeOffArmor()
+    {
+        return shouldTakeOffArmor;
+    }
+
+    @Override
+    public String getForceStatus()
+    {
+        return forceStatus;
+    }
+    @Override
+    public void setForceStatus(final String status)
+    {
+        this.forceStatus = status;
     }
 
     @Override
@@ -759,7 +794,7 @@ public class CitizenData implements ICitizenData
     public boolean isRelatedTo(final ICitizenData data)
     {
         return siblings.contains(data.getId()) || children.contains(data.getId()) || partner == data.getId() || parents.getA().equals(data.getName()) || parents.getB()
-          .equals(data.getName());
+                .equals(data.getName());
     }
 
     @Override
@@ -1387,9 +1422,9 @@ public class CitizenData implements ICitizenData
                 try
                 {
                     final ServerCitizenInteraction handler =
-                      (ServerCitizenInteraction) MinecoloniesAPIProxy.getInstance()
-                        .getInteractionResponseHandlerDataManager()
-                        .createFrom(this, handlerTagList.getCompound(i).getCompound(TAG_CHAT_OPTION));
+                            (ServerCitizenInteraction) MinecoloniesAPIProxy.getInstance()
+                                    .getInteractionResponseHandlerDataManager()
+                                    .createFrom(this, handlerTagList.getCompound(i).getCompound(TAG_CHAT_OPTION));
                     citizenChatOptions.put(handler.getId(), handler);
                 }
                 catch (final Exception ex)
@@ -1713,14 +1748,14 @@ public class CitizenData implements ICitizenData
             citizen.getNavigation().getPathingOptions().setCanClimbAdvanced(((EntityCitizen) citizen).canClimbVines());
 
             final AttributeModifier speedModifier = new AttributeModifier(RESEARCH_BONUS_MULTIPLIER,
-              colony.getResearchManager().getResearchEffects().getEffectStrength(WALKING),
-              AttributeModifier.Operation.MULTIPLY_TOTAL);
+                    colony.getResearchManager().getResearchEffects().getEffectStrength(WALKING),
+                    AttributeModifier.Operation.MULTIPLY_TOTAL);
             AttributeModifierUtils.addModifier(citizen, speedModifier, Attributes.MOVEMENT_SPEED);
 
             final AttributeModifier healthModLevel =
-              new AttributeModifier(HEALTH_BOOST.toString(),
-                colony.getResearchManager().getResearchEffects().getEffectStrength(HEALTH_BOOST),
-                AttributeModifier.Operation.ADDITION);
+                    new AttributeModifier(HEALTH_BOOST.toString(),
+                            colony.getResearchManager().getResearchEffects().getEffectStrength(HEALTH_BOOST),
+                            AttributeModifier.Operation.ADDITION);
             AttributeModifierUtils.addHealthModifier(citizen, healthModLevel);
 
             if (getColony().getResearchManager().getResearchEffects().getEffectStrength(MORE_AIR) > 0)
@@ -1741,19 +1776,19 @@ public class CitizenData implements ICitizenData
         if (job != null && job.getWorkBuilding() != null && !job.getWorkBuilding().isGuardBuildingNear() && !WorldUtil.isPeaceful(colony.getWorld()))
         {
             triggerInteraction(new StandardInteraction(Component.translatable(CITIZEN_NOT_GUARD_NEAR_WORK),
-              Component.translatable(CITIZEN_NOT_GUARD_NEAR_WORK),
-              ChatPriority.CHITCHAT));
+                    Component.translatable(CITIZEN_NOT_GUARD_NEAR_WORK),
+                    ChatPriority.CHITCHAT));
         }
 
         if (homeBuilding != null && !homeBuilding.isGuardBuildingNear() && !WorldUtil.isPeaceful(colony.getWorld()))
         {
             triggerInteraction(new StandardInteraction(Component.translatable(CITIZEN_NOT_GUARD_NEAR_HOME),
-              Component.translatable(CITIZEN_NOT_GUARD_NEAR_HOME),
-              ChatPriority.CHITCHAT));
+                    Component.translatable(CITIZEN_NOT_GUARD_NEAR_HOME),
+                    ChatPriority.CHITCHAT));
         }
 
         decreaseSaturation(
-          job == null || job.getWorkBuilding().getBuildingLevel() == 0 ? 1 : (SATURATION_DECREASE_FACTOR * Math.pow(2, job.getWorkBuilding().getBuildingLevel())) * 2);
+                job == null || job.getWorkBuilding().getBuildingLevel() == 0 ? 1 : (SATURATION_DECREASE_FACTOR * Math.pow(2, job.getWorkBuilding().getBuildingLevel())) * 2);
     }
 
     @Override
@@ -1765,16 +1800,16 @@ public class CitizenData implements ICitizenData
     @Override
     public boolean needsBetterFood()
     {
-        if (this.getWorkBuilding() == null)
+        if (this.getHomeBuilding() == null)
         {
             return false;
         }
         else
         {
             int slotBadFood = InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(inventory,
-              stack -> CAN_EAT.test(stack) && !this.getWorkBuilding().canEat(stack));
+                    stack -> CAN_EAT.test(stack) && !this.getHomeBuilding().canEat(stack));
             int slotGoodFood = InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(inventory,
-              stack -> CAN_EAT.test(stack) && this.getWorkBuilding().canEat(stack));
+                    stack -> CAN_EAT.test(stack) && this.getHomeBuilding().canEat(stack));
             return slotBadFood != -1 && slotGoodFood == -1;
         }
     }

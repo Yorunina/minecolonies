@@ -106,8 +106,8 @@ public final class ColonyView implements IColonyView
      * The colony flag (set to plain white as default)
      */
     private ListTag        colonyFlag      = new BannerPattern.Builder()
-                                               .addPattern(BannerPatterns.BASE, DyeColor.WHITE)
-                                               .toListTag();
+            .addPattern(BannerPatterns.BASE, DyeColor.WHITE)
+            .toListTag();
 
     private BlockPos center = BlockPos.ZERO;
 
@@ -836,9 +836,9 @@ public final class ColonyView implements IColonyView
 
         this.style = buf.readUtf(32767);
         if (isNewSubscription
-              && StructurePacks.hasPack(this.style)
-              && RenderingCache.getOrCreateBlueprintPreviewData("blueprint").getBlueprint() == null
-              && this.isCoordInColony(world, Minecraft.getInstance().player.blockPosition())
+                && StructurePacks.hasPack(this.style)
+                && RenderingCache.getOrCreateBlueprintPreviewData("blueprint").getBlueprint() == null
+                && this.isCoordInColony(world, Minecraft.getInstance().player.blockPosition())
         )
         {
             StructurePacks.selectedPack = StructurePacks.getStructurePack(this.style);
@@ -854,20 +854,20 @@ public final class ColonyView implements IColonyView
         for (int i = 0; i < noOfAllies; i++)
         {
             allies.add(new CompactColonyReference(buf.readUtf(32767),
-              buf.readBlockPos(),
-              buf.readInt(),
-              buf.readBoolean(),
-              ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(32767)))));
+                    buf.readBlockPos(),
+                    buf.readInt(),
+                    buf.readBoolean(),
+                    ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(32767)))));
         }
 
         final int noOfFeuds = buf.readInt();
         for (int i = 0; i < noOfFeuds; i++)
         {
             feuds.add(new CompactColonyReference(buf.readUtf(32767),
-              buf.readBlockPos(),
-              buf.readInt(),
-              false,
-              ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(32767)))));
+                    buf.readBlockPos(),
+                    buf.readInt(),
+                    false,
+                    ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(32767)))));
         }
 
         final int ticketChunkCount = buf.readInt();
@@ -1081,16 +1081,16 @@ public final class ColonyView implements IColonyView
     public @NotNull List<IField> getFields(final Predicate<IField> matcher)
     {
         return fields.stream()
-                 .filter(matcher)
-                 .toList();
+                .filter(matcher)
+                .toList();
     }
 
     @Override
     public @Nullable IField getField(final Predicate<IField> matcher)
     {
         return getFields(matcher).stream()
-                 .findFirst()
-                 .orElse(null);
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -1588,4 +1588,14 @@ public final class ColonyView implements IColonyView
     {
         return this.questManager;
     }
+
+
+    @Override
+    public String getColonyForceStatus()
+    {
+        return null;
+    }
+
+    @Override
+    public void setColonyForceStatus(final String status) {}
 }

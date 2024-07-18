@@ -229,4 +229,14 @@ public interface IRaiderManager
      * Notify raid manager of a passing through raid.
      */
     void setPassThroughRaid();
+
+    /**
+     * set PassThroughRaidTime
+     */
+    void setPassThroughRaidTime(Integer ticks);
+
+    /**
+     * get PassThroughRaidTime
+     */
+    Long getPassThroughRaidTime();
 }

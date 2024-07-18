@@ -68,9 +68,9 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
     {
         super(job);
         super.registerTargets(
-          new AITarget(IDLE, START_WORKING, 1),
-          new AITarget(START_WORKING, this::startWorkingAtOwnBuilding, 100),
-          new AITarget(PREPARING, this::prepare, TICKS_SECOND)
+                new AITarget(IDLE, START_WORKING, 1),
+                new AITarget(START_WORKING, this::startWorkingAtOwnBuilding, 100),
+                new AITarget(PREPARING, this::prepare, TICKS_SECOND)
         );
         worker.setCanPickUpLoot(true);
 
@@ -121,10 +121,10 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
                 return getState();
             }
             InventoryFunctions.matchFirstInProviderWithSimpleAction(worker,
-              stack -> !ItemStackUtils.isEmpty(stack)
-                         && ItemStackUtils.doesItemServeAsWeapon(stack)
-                         && ItemStackUtils.hasToolLevel(stack, tool, 0, building.getMaxToolLevel()),
-              itemStack -> worker.getCitizenItemHandler().setMainHeldItem(itemStack));
+                    stack -> !ItemStackUtils.isEmpty(stack)
+                            && ItemStackUtils.doesItemServeAsWeapon(stack)
+                            && ItemStackUtils.hasToolLevel(stack, tool, 0, building.getMaxToolLevel()),
+                    itemStack -> worker.getCitizenItemHandler().setMainHeldItem(itemStack));
         }
 
         equipInventoryArmor();
@@ -151,7 +151,7 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
                 continue;
             }
             if (item.getItemNeeded() == ToolType.SHIELD
-                  && worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(SHIELD_USAGE) <= 0)
+                    && worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(SHIELD_USAGE) <= 0)
             {
                 continue;
             }
@@ -181,8 +181,8 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
             {
                 // None found, check for equipped
                 if ((item.getType().isArmor() && ItemStackUtils.isEmpty(worker.getInventoryCitizen().getArmorInSlot(item.getType()))) || (!item.getType().isArmor()
-                                                                                                                                            && ItemStackUtils.isEmpty(worker.getItemBySlot(
-                  item.getType()))))
+                        && ItemStackUtils.isEmpty(worker.getItemBySlot(
+                        item.getType()))))
                 {
                     // create request
                     checkForToolOrWeaponAsync(item.getItemNeeded(), item.getMinArmorLevel(), item.getMaxArmorLevel());
@@ -223,7 +223,7 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
                         final ItemStack armorStack = worker.getInventoryCitizen().getArmorInSlot(item.getType());
                         worker.getInventoryCitizen().moveArmorToInventory(item.getType());
                         final int slot =
-                          InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(worker.getInventoryCitizen(), stack -> stack == armorStack);
+                                InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(worker.getInventoryCitizen(), stack -> stack == armorStack);
                         if (slot > -1)
                         {
                             InventoryUtils.transferItemStackIntoNextFreeSlotInProvider(worker.getInventoryCitizen(), slot, building);
@@ -243,7 +243,7 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
                     if (!ItemStackUtils.isEmpty(worker.getItemBySlot(item.getType())))
                     {
                         final int slot =
-                          InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(worker.getInventoryCitizen(), stack -> stack == worker.getItemBySlot(item.getType()));
+                                InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(worker.getInventoryCitizen(), stack -> stack == worker.getItemBySlot(item.getType()));
                         if (slot > -1)
                         {
                             InventoryUtils.transferItemStackIntoNextFreeSlotInProvider(worker.getInventoryCitizen(), slot, building);
@@ -306,7 +306,7 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
             else
             {
                 if (ItemStackUtils.isEmpty(worker.getItemBySlot(item.getType())) && building.getBuildingLevel() >= item.getMinBuildingLevelRequired()
-                      && building.getBuildingLevel() <= item.getMaxBuildingLevelRequired())
+                        && building.getBuildingLevel() <= item.getMaxBuildingLevelRequired())
                 {
                     equipment.add(item.getType());
                     int slot = InventoryUtils.findFirstSlotInItemHandlerNotEmptyWith(worker.getInventoryCitizen(), item);
@@ -326,13 +326,15 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
     {
         final ItemStack stack = worker.getItemBySlot(EquipmentSlot.OFFHAND);
         if (stack.isEmpty()
-              || InventoryUtils.findFirstSlotInItemHandlerWith(getInventory(), itemStack -> ItemStackUtils.compareItemStacksIgnoreStackSize(stack, itemStack, false, true)) == -1)
+                || InventoryUtils.findFirstSlotInItemHandlerWith(getInventory(), itemStack -> ItemStackUtils.compareItemStacksIgnoreStackSize(stack, itemStack, false, true)) == -1)
         {
             worker.setItemSlot(EquipmentSlot.OFFHAND, ItemStackUtils.EMPTY);
         }
-        worker.setItemSlot(EquipmentSlot.HEAD, ItemStackUtils.EMPTY);
-        worker.setItemSlot(EquipmentSlot.CHEST, ItemStackUtils.EMPTY);
-        worker.setItemSlot(EquipmentSlot.LEGS, ItemStackUtils.EMPTY);
-        worker.setItemSlot(EquipmentSlot.FEET, ItemStackUtils.EMPTY);
+        if (worker.getCitizenData().getShouldTakeOffArmor()) {
+            worker.setItemSlot(EquipmentSlot.HEAD, ItemStackUtils.EMPTY);
+            worker.setItemSlot(EquipmentSlot.CHEST, ItemStackUtils.EMPTY);
+            worker.setItemSlot(EquipmentSlot.LEGS, ItemStackUtils.EMPTY);
+            worker.setItemSlot(EquipmentSlot.FEET, ItemStackUtils.EMPTY);
+        }
     }
 }
