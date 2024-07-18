@@ -491,11 +491,16 @@ public interface IColony
      */
     ICitizen getCitizen(int id);
 
-    String getColonyForceStatus();
+    boolean getUnderEmergencyProtocol();
 
     /**
      * Set the forceStatus of the citizen.
      * @param status
      */
-    void setColonyForceStatus(final String status);
+    void setUnderEmergencyProtocol(final boolean status);
+
+
+    boolean getDisableMourn();
+
+    void setDisableMourn(final boolean status);
 }

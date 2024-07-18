@@ -332,10 +332,9 @@ public class Colony implements IColony
      */
     private int day = 0;
 
-    /**
-     * A force status to describe colony status
-     */
-    private String colonyForceStatus = "none";
+    private boolean underEmergencyProtocol = false;
+
+    private boolean disableMourn = false;
 
     private final SettingsModule settingsModule = (SettingsModule) BuildingEntry.produceModuleWithoutBuilding(BuildingModules.TOWNHALL_SETTINGS.key);
 
@@ -1966,14 +1965,26 @@ public class Colony implements IColony
     }
 
     @Override
-    public String getColonyForceStatus()
+    public boolean getUnderEmergencyProtocol()
     {
-        return colonyForceStatus;
+        return underEmergencyProtocol;
     }
 
     @Override
-    public void setColonyForceStatus(final String status)
+    public void setUnderEmergencyProtocol(final boolean status)
     {
-        this.colonyForceStatus = status;
+        this.underEmergencyProtocol = status;
+    }
+
+    @Override
+    public boolean getDisableMourn()
+    {
+        return disableMourn;
+    }
+
+    @Override
+    public void setDisableMourn(final boolean status)
+    {
+        this.disableMourn = status;
     }
 }
