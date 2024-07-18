@@ -330,9 +330,11 @@ public abstract class AbstractEntityAIFight<J extends AbstractJobGuard<J>, B ext
         {
             worker.setItemSlot(EquipmentSlot.OFFHAND, ItemStackUtils.EMPTY);
         }
-        worker.setItemSlot(EquipmentSlot.HEAD, ItemStackUtils.EMPTY);
-        worker.setItemSlot(EquipmentSlot.CHEST, ItemStackUtils.EMPTY);
-        worker.setItemSlot(EquipmentSlot.LEGS, ItemStackUtils.EMPTY);
-        worker.setItemSlot(EquipmentSlot.FEET, ItemStackUtils.EMPTY);
+        if (worker.getCitizenData().getShouldTakeOffArmor()) {
+            worker.setItemSlot(EquipmentSlot.HEAD, ItemStackUtils.EMPTY);
+            worker.setItemSlot(EquipmentSlot.CHEST, ItemStackUtils.EMPTY);
+            worker.setItemSlot(EquipmentSlot.LEGS, ItemStackUtils.EMPTY);
+            worker.setItemSlot(EquipmentSlot.FEET, ItemStackUtils.EMPTY);
+        }
     }
 }

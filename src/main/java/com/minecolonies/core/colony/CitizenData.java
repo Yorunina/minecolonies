@@ -332,6 +332,11 @@ public class CitizenData implements ICitizenData
     private String forceStatus = "none";
 
     /**
+     * special force status to control entity AI
+     */
+    private boolean shouldTakeOffArmor = true;
+
+    /**
      * Create a CitizenData given an ID. Used as a super-constructor or during loading.
      *
      * @param id     ID of the Citizen.
@@ -389,12 +394,25 @@ public class CitizenData implements ICitizenData
         this.voiceProfile = profile;
     }
 
+
+
+    @Override
+    public void setShouldTakeOffArmor(final boolean status)
+    {
+        this.shouldTakeOffArmor = status;
+    }
+
+    @Override
+    public boolean getShouldTakeOffArmor()
+    {
+        return shouldTakeOffArmor;
+    }
+
     @Override
     public String getForceStatus()
     {
         return forceStatus;
     }
-
     @Override
     public void setForceStatus(final String status)
     {

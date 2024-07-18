@@ -462,4 +462,19 @@ public interface ICitizenData extends ICivilianData, IQuestGiver, IQuestParticip
      * @param status
      */
     void setForceStatus(final String status);
+
+    /**
+     * Get the forceStatus of the citizen.
+     *
+     * @return the status
+     */
+    boolean getShouldTakeOffArmor();
+
+    /**
+     * Set the forceStatus of the citizen.
+     *
+     * @param status
+     */
+    void setShouldTakeOffArmor(final boolean status);
+
 }
