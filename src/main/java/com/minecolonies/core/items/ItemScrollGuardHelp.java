@@ -75,7 +75,7 @@ public class ItemScrollGuardHelp extends AbstractItemScroll
         return itemStack;
     }
 
-    public void summonGuardFollowPlayer(final Level world, final ServerPlayer player, final IBuilding building, final IColony colony, Integer lastTime) {
+    public static void summonGuardFollowPlayer(final Level world, final ServerPlayer player, final IBuilding building, final IColony colony, final Integer lastTime) {
         final List<ICitizenData> guards = new ArrayList<>(building.getAllAssignedCitizen());
 
         for (final ICitizenData citizenData : guards) {
