@@ -334,6 +334,8 @@ public class Colony implements IColony
 
     private boolean underEmergencyProtocol = false;
 
+    private boolean underEmergencyEvacuation = false;
+
     private boolean disableMourn = false;
 
     private final SettingsModule settingsModule = (SettingsModule) BuildingEntry.produceModuleWithoutBuilding(BuildingModules.TOWNHALL_SETTINGS.key);
@@ -1991,4 +1993,17 @@ public class Colony implements IColony
     {
         this.disableMourn = status;
     }
+
+    @Override
+    public boolean getUnderEmergencyEvacuation()
+    {
+        return underEmergencyEvacuation;
+    }
+
+    @Override
+    public void setUnderEmergencyEvacuation(final boolean status)
+    {
+        this.underEmergencyEvacuation = status;
+    }
+
 }

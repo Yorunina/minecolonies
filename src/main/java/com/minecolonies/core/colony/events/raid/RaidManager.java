@@ -664,7 +664,7 @@ public class RaidManager implements IRaiderManager
     @Override
     public boolean isRaided()
     {
-        if (colony.getWorld().getGameTime() <= passingThroughRaidTime)
+        if (colony.getWorld().getGameTime() <= passingThroughRaidTime || colony.getUnderEmergencyEvacuation())
         {
             return true;
         }

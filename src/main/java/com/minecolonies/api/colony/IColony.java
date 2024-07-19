@@ -503,4 +503,13 @@ public interface IColony
     boolean getDisableMourn();
 
     void setDisableMourn(final boolean status);
+
+
+    boolean getUnderEmergencyEvacuation();
+
+    /**
+     * Set the forceStatus of the citizen.
+     * @param status
+     */
+    void setUnderEmergencyEvacuation(final boolean status);
 }

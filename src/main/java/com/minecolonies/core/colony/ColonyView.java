@@ -1607,4 +1607,13 @@ public final class ColonyView implements IColonyView
 
     @Override
     public void setDisableMourn(final boolean status) {}
+
+    @Override
+    public boolean getUnderEmergencyEvacuation()
+    {
+        return false;
+    }
+
+    @Override
+    public void setUnderEmergencyEvacuation(final boolean status) {}
 }
