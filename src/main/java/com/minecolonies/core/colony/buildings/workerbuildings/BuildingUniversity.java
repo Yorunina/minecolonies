@@ -1,5 +1,6 @@
 package com.minecolonies.core.colony.buildings.workerbuildings;
 
+import com.minecolonies.api.advancements.AdvancementTriggers;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.jobs.ModJobs;
@@ -8,6 +9,7 @@ import com.minecolonies.api.research.ILocalResearch;
 import com.minecolonies.api.util.MessageUtils;
 import com.minecolonies.core.colony.buildings.AbstractBuilding;
 import com.minecolonies.core.colony.buildings.modules.WorkerBuildingModule;
+import com.minecolonies.core.util.AdvancementUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -169,7 +171,9 @@ public class BuildingUniversity extends AbstractBuilding
         {
             citizen.applyResearchEffects();
         }
-
+        // todo 新增研究触发器
+        AdvancementUtils.TriggerAdvancementPlayersForColony(colony,
+                player -> AdvancementTriggers.COLONY_RESEARCH_COMPLETE.trigger(player, research.getId().toString()));
         final MutableComponent message = Component.translatable(RESEARCH_CONCLUDED + ThreadLocalRandom.current().nextInt(3),
           MutableComponent.create(IGlobalResearchTree.getInstance().getResearch(research.getBranch(), research.getId()).getName()));
 
