@@ -75,6 +75,8 @@ public final class NbtTagConstants
     public static final String TAG_DISABLE_MOURN             = "disableMourn";
 
     public static final String TAG_UNDER_EMERGENCY_PROTOCOL             = "underEmergencyProtocol";
+    public static final String TAG_UNDER_EMERGENCY_EVACUATION           = "underEmergencyEvacuation";
+
     public static final String TAG_JUST_ATE       = "justAte";
     public static final String TAG_EXPLOSIONS     = "Explosions";
     public static final String TAG_FIREWORKS      = "Fireworks";

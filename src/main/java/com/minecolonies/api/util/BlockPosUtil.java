@@ -67,6 +67,14 @@ public final class BlockPosUtil
     };
 
     /**
+     * Selects a solid position with air above
+     */
+    public static final BiPredicate<BlockGetter, BlockPos> FORCE_SOLID_AIR_POS_SELECTOR = (world, pos) -> {
+        return world.getBlockState(pos).isSolid() && world.getBlockState(
+                pos.above()).isAir() && world.getBlockState(pos.above(2)).isAir();
+    };
+
+    /**
      * Selects a double air position
      */
     public static final BiPredicate<BlockGetter, BlockPos> DOUBLE_AIR_POS_SELECTOR = (world, pos) -> {

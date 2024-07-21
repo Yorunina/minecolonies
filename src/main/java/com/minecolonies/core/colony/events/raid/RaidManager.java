@@ -519,6 +519,91 @@ public class RaidManager implements IRaiderManager
         return worldSpawnPos;
     }
 
+
+    /**
+     * Calculate a random spawn point along the colony's border
+     *
+     * @return Returns the random blockPos
+     */
+    @Override
+    public BlockPos calculateSpawnLocationWithParam(Integer tryTimes)
+    {
+        BlockPos locationSum = new BlockPos(0, 0, 0);
+        int amount = 0;
+
+        for (final IBuilding building : colony.getBuildingManager().getBuildings().values())
+        {
+            if (WorldUtil.isEntityBlockLoaded(colony.getWorld(), building.getPosition()))
+            {
+                amount++;
+                locationSum = locationSum.offset(building.getPosition());
+            }
+        }
+
+        if (amount == 0)
+        {
+            Log.getLogger().info("Trying to spawn raid on colony with no loaded buildings, aborting!");
+            return null;
+        }
+
+        // Calculate center on loaded buildings, to find a nice distance for raiders
+        final BlockPos calcCenter = new BlockPos(locationSum.getX() / amount, locationSum.getY() / amount, locationSum.getZ() / amount);
+
+        // Get a random point on a circle around the colony,far out for the direction
+        final int degree = colony.getWorld().random.nextInt(360);
+        int x = (int) Math.round(500 * Math.cos(Math.toRadians(degree)));
+        int z = (int) Math.round(500 * Math.sin(Math.toRadians(degree)));
+        final BlockPos advanceTowards = calcCenter.offset(x, 0, z);
+
+        BlockPos spawnPos = null;
+        final BlockPos closestBuilding = colony.getBuildingManager().getBestBuilding(advanceTowards, IBuilding.class);
+
+        if (closestBuilding == null)
+        {
+            return null;
+        }
+
+        BlockPos worldSpawnPos = null;
+        for (int i = 0; i < tryTimes; i++)
+        {
+            spawnPos = findSpawnPointInDirections(new BlockPos(closestBuilding.getX(), calcCenter.getY(), closestBuilding.getZ()), advanceTowards);
+            if (spawnPos != null)
+            {
+                worldSpawnPos = BlockPosUtil.findAround(colony.getWorld(),
+                        BlockPosUtil.getFloor(spawnPos, colony.getWorld()),
+                        30,
+                        3,
+                        FORCE_SOLID_AIR_POS_SELECTOR);
+
+                if (worldSpawnPos == null)
+                {
+                    continue;
+                }
+
+                if (colony.getWorld().getBlockState(worldSpawnPos).getBlock() != Blocks.WATER)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (spawnPos == null)
+        {
+            return null;
+        }
+
+        if (worldSpawnPos == null && MineColonies.getConfig().getServer().skyRaiders.get())
+        {
+            worldSpawnPos = BlockPosUtil.findAround(colony.getWorld(),
+                    BlockPosUtil.getFloor(spawnPos, colony.getWorld()),
+                    15,
+                    10,
+                    DOUBLE_AIR_POS_SELECTOR);
+        }
+
+        return worldSpawnPos;
+    }
+
     /**
      * Finds a spawnpoint randomly in a circular shape around the center Advances
      *

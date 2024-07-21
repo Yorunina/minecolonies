@@ -117,6 +117,13 @@ public interface IRaiderManager
     BlockPos calculateSpawnLocation();
 
     /**
+     * Calculates the spawn position for raids
+     *
+     * @return the spawn location.
+     */
+    BlockPos calculateSpawnLocationWithParam(Integer tryTimes);
+
+    /**
      * Getter for the last spawn points.
      *
      * @return a copy of the list
