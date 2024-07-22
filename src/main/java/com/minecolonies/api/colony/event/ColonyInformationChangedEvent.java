@@ -59,6 +59,21 @@ public class ColonyInformationChangedEvent extends AbstractColonyEvent
         return type;
     }
 
+    public ILocalResearch getResearch()
+    {
+        return this.research;
+    }
+
+    public IBuilding getBuilding()
+    {
+        return this.building;
+    }
+
+    public ICitizenData getCitizen()
+    {
+        return this.citizen;
+    }
+
     /**
      * What information of the colony changed.
      */
