@@ -85,7 +85,6 @@ public final class Constants
     public static final String CRITERION_CITIZEN_BURY           = "citizen_bury";
     public static final String CRITERION_CITIZEN_RESURRECT      = "citizen_resurrect";
     public static final String CRITERION_UNDERTAKER_TOTEM       = "undertaker_totem";
-    public static final String COLONY_RESEARCH_COMPLETE       = "colony_research_complete";
 
     /**
      * Default creative tab key.

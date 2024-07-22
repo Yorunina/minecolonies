@@ -8,7 +8,6 @@ import com.minecolonies.api.advancements.citizen_eat_food.CitizenEatFoodTrigger;
 import com.minecolonies.api.advancements.citizen_resurrect.CitizenResurrectTrigger;
 import com.minecolonies.api.advancements.click_gui_button.ClickGuiButtonTrigger;
 import com.minecolonies.api.advancements.colony_population.ColonyPopulationTrigger;
-import com.minecolonies.api.advancements.colony_research_complete.ColonyResearchCompleteTrigger;
 import com.minecolonies.api.advancements.complete_build_request.CompleteBuildRequestTrigger;
 import com.minecolonies.api.advancements.create_build_request.CreateBuildRequestTrigger;
 import com.minecolonies.api.advancements.deep_mine.DeepMineTrigger;
@@ -42,8 +41,6 @@ public class AdvancementTriggers
     public static final CitizenResurrectTrigger     CITIZEN_RESURRECT      = new CitizenResurrectTrigger();
     public static final UndertakerTotemTrigger      UNDERTAKER_TOTEM       = new UndertakerTotemTrigger();
 
-    public static final ColonyResearchCompleteTrigger COLONY_RESEARCH_COMPLETE       = new ColonyResearchCompleteTrigger();
-
     /**
      * Registers all the triggers so they can be referenced in the advancement JSON
      */
@@ -65,6 +62,5 @@ public class AdvancementTriggers
         CriteriaTriggers.register(CITIZEN_BURY);
         CriteriaTriggers.register(CITIZEN_RESURRECT);
         CriteriaTriggers.register(UNDERTAKER_TOTEM);
-        CriteriaTriggers.register(COLONY_RESEARCH_COMPLETE);
     }
 }
