@@ -4,8 +4,7 @@ import com.minecolonies.api.advancements.AdvancementTriggers;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.buildings.IBuilding;
-import com.minecolonies.api.colony.event.ColonyCompleteBuildRequestEvent;
-import com.minecolonies.api.colony.event.ColonyResearchCompletedEvent;
+import com.minecolonies.api.colony.event.ColonyInformationChangedEvent;
 import com.minecolonies.api.colony.jobs.IJob;
 import com.minecolonies.api.colony.workorders.IWorkManager;
 import com.minecolonies.api.colony.workorders.WorkOrderType;
@@ -263,7 +262,7 @@ public class WorkOrderBuilding extends AbstractWorkOrder
             {
                 AdvancementUtils.TriggerAdvancementPlayersForColony(colony,
                         player -> AdvancementTriggers.COMPLETE_BUILD_REQUEST.trigger(player, building.getBuildingType().getBuildingBlock().getBlueprintName(), this.getTargetLevel()));
-                MinecraftForge.EVENT_BUS.post(new ColonyCompleteBuildRequestEvent(colony, building, citizen));
+                MinecraftForge.EVENT_BUS.post(new ColonyInformationChangedEvent(colony, building, citizen));
             }
         }
     }

@@ -2,8 +2,7 @@ package com.minecolonies.core.colony.buildings.workerbuildings;
 
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
-import com.minecolonies.api.colony.event.ColonyResearchCompletedEvent;
-import com.minecolonies.api.colony.event.ColonyViewUpdatedEvent;
+import com.minecolonies.api.colony.event.ColonyInformationChangedEvent;
 import com.minecolonies.api.colony.jobs.ModJobs;
 import com.minecolonies.api.research.IGlobalResearchTree;
 import com.minecolonies.api.research.ILocalResearch;
@@ -177,7 +176,7 @@ public class BuildingUniversity extends AbstractBuilding
           MutableComponent.create(IGlobalResearchTree.getInstance().getResearch(research.getBranch(), research.getId()).getName()));
 
         MessageUtils.format(message).sendTo(colony).forManagers();
-        MinecraftForge.EVENT_BUS.post(new ColonyResearchCompletedEvent(colony, research));
+        MinecraftForge.EVENT_BUS.post(new ColonyInformationChangedEvent(colony, research));
 
         colony.getResearchManager().checkAutoStartResearch();
         this.markDirty();
