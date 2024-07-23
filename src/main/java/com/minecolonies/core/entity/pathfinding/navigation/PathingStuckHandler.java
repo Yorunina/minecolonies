@@ -37,7 +37,7 @@ public class PathingStuckHandler implements IStuckHandler
     /**
      * Constants related to tp.
      */
-    private static final int MIN_TP_DELAY    = 120 * 20;
+    private static final int MIN_TP_DELAY    = 30 * 20;
     private static final int MIN_DIST_FOR_TP = 10;
 
     /**
@@ -51,9 +51,9 @@ public class PathingStuckHandler implements IStuckHandler
     private int teleportRange = 0;
 
     /**
-     * Max timeout per block to go, default = 10sec per block
+     * Max timeout per block to go, default = 2sec per block
      */
-    private int timePerBlockDistance = 200;
+    private int timePerBlockDistance = 40;
 
     /**
      * The current stucklevel, determines actions taken

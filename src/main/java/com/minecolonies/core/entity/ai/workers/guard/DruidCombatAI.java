@@ -47,12 +47,12 @@ public class DruidCombatAI extends AttackMoveAI<EntityCitizen>
     /**
      * List of potential positive effects.
      */
-    private static final ImmutableList<MobEffect> SUPPORT_EFFECTS = ImmutableList.of(MobEffects.DAMAGE_BOOST, MobEffects.SATURATION, MobEffects.HEAL, MobEffects.DAMAGE_RESISTANCE);
+    private static final ImmutableList<MobEffect> SUPPORT_EFFECTS = ImmutableList.of(MobEffects.DAMAGE_BOOST, MobEffects.SATURATION, MobEffects.HEAL, MobEffects.DAMAGE_RESISTANCE, MobEffects.REGENERATION);
 
     /**
      * List of potential positive effects.
      */
-    private static final ImmutableList<MobEffect> ADVERSE_EFFECTS = ImmutableList.of(MobEffects.MOVEMENT_SLOWDOWN, MobEffects.WEAKNESS);
+    private static final ImmutableList<MobEffect> ADVERSE_EFFECTS = ImmutableList.of(MobEffects.MOVEMENT_SLOWDOWN, MobEffects.WEAKNESS, MobEffects.WITHER);
 
     /**
      * The xp per thrown potion
@@ -139,12 +139,12 @@ public class DruidCombatAI extends AttackMoveAI<EntityCitizen>
         }
         if (AbstractEntityAIGuard.isAttackableTarget(user, target))
         {
-            effect = ADVERSE_EFFECTS.get(user.getRandom().nextInt(gotMaterial ? 2 : 1));
+            effect = ADVERSE_EFFECTS.get(user.getRandom().nextInt(gotMaterial ? 3 : 1));
             predicate = (entity, eff) -> AbstractEntityAIGuard.isAttackableTarget(user, entity);
         }
         else
         {
-            effect = SUPPORT_EFFECTS.get(user.getRandom().nextInt(gotMaterial ? 4 : 1));
+            effect = SUPPORT_EFFECTS.get(user.getRandom().nextInt(gotMaterial ? 5 : 1));
             predicate = (entity, eff) -> !AbstractEntityAIGuard.isAttackableTarget(user, entity);
         }
 

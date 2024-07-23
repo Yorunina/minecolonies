@@ -64,7 +64,7 @@ public class KnightCombatAI extends AttackMoveAI<EntityCitizen>
     /**
      * Knockback chance
      */
-    private static final int                   KNOCKBACK_CHANCE = 5;
+    private static final int                   KNOCKBACK_CHANCE = 3;
     private final        AbstractEntityAIGuard parentAI;
 
     /**

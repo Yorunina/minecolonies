@@ -47,7 +47,7 @@ public final class GuardConstants
     /**
      * Minimum physical Attack delay in ticks, Monsters are immune for 10 ticks
      */
-    public static final int PHYSICAL_ATTACK_DELAY_MIN = 10;
+    public static final int PHYSICAL_ATTACK_DELAY_MIN = 5;
 
     /**
      * Physical Attack delay in ticks.
@@ -66,7 +66,7 @@ public final class GuardConstants
     /**
      * The base distance for a potion throwing attack in Blocks.
      */
-    public static final int BASE_DISTANCE_FOR_POTION_ATTACK = 3;
+    public static final int BASE_DISTANCE_FOR_POTION_ATTACK = 5;
 
     /**
      * Rangers maximum distance in blocks for an attack.(24 max arrow dist)
@@ -110,12 +110,12 @@ public final class GuardConstants
     /**
      * Basic delay for the next Knight attack.
      */
-    public static final int KNIGHT_ATTACK_DELAY_BASE = 32;
+    public static final int KNIGHT_ATTACK_DELAY_BASE = 30;
 
     /**
      * Minimum delay for the next Knight attack.
      */
-    public static final int KNIGHT_ATTACK_DELAY_MIN = 16;
+    public static final int KNIGHT_ATTACK_DELAY_MIN = 10;
 
     /**
      * Basic bonus hp for knights
@@ -130,7 +130,7 @@ public final class GuardConstants
     /**
      * This knight's max distance for attacking.
      */
-    public static final int MAX_DISTANCE_FOR_ATTACK = 2;
+    public static final int MAX_DISTANCE_FOR_ATTACK = 4;
 
     // -- Knight Guard Stuff -- \\
 

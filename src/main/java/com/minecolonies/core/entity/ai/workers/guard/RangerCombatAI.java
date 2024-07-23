@@ -229,7 +229,7 @@ public class RangerCombatAI extends AttackMoveAI<EntityCitizen>
      */
     private double calculateDamage(final AbstractArrow arrow)
     {
-        int damage = user.getCitizenData().getCitizenSkillHandler().getLevel(Skill.Agility) / 5;
+        int damage = user.getCitizenData().getCitizenSkillHandler().getLevel(Skill.Agility) / 4;
 
         final ItemStack heldItem = user.getItemInHand(InteractionHand.MAIN_HAND);
         damage += EnchantmentHelper.getDamageBonus(heldItem, target.getMobType()) / 2.5;
