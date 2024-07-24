@@ -64,7 +64,7 @@ public class KnightCombatAI extends AttackMoveAI<EntityCitizen>
     /**
      * Knockback chance
      */
-    private static final int                   KNOCKBACK_CHANCE = 3;
+    private static final int                   KNOCKBACK_CHANCE = 5;
     private final        AbstractEntityAIGuard parentAI;
 
     /**
@@ -152,7 +152,7 @@ public class KnightCombatAI extends AttackMoveAI<EntityCitizen>
 
         final double damageToBeDealt = getAttackDamage();
         DamageSource source = target.level.damageSources().source(DamageSourceKeys.GUARD, user);
-        if (MineColonies.getConfig().getServer().pvp_mode.get() && target instanceof Player)
+        if (target instanceof Player)
         {
             source = target.level.damageSources().source(DamageSourceKeys.GUARD_PVP, user);
         }

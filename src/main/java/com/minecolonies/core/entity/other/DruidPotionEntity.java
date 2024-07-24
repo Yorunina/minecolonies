@@ -164,7 +164,7 @@ public class DruidPotionEntity extends ThrownPotion
         double z = target.getZ() + movement.z - thrower.getZ();
         final double distance = Math.sqrt(x * x + z * z);
 
-        potionentity.shoot(x, y + distance * 0.2, z, velocity, inaccuracy);
+        potionentity.shoot(x, y + distance * 0.25, z, velocity, inaccuracy);
         world.addFreshEntity(potionentity);
     }
 

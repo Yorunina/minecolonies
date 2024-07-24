@@ -63,7 +63,7 @@ public class RangerCombatAI extends AttackMoveAI<EntityCitizen>
     /**
      * Extra damage for arrow usage
      */
-    private static final double ARROW_EXTRA_DAMAGE = 2.0f;
+    private static final double ARROW_EXTRA_DAMAGE = 6.0f;
 
     /**
      * How many ticks we activate the bow before shooting

@@ -66,7 +66,7 @@ public final class GuardConstants
     /**
      * The base distance for a potion throwing attack in Blocks.
      */
-    public static final int BASE_DISTANCE_FOR_POTION_ATTACK = 5;
+    public static final int BASE_DISTANCE_FOR_POTION_ATTACK = 3;
 
     /**
      * Rangers maximum distance in blocks for an attack.(24 max arrow dist)
@@ -115,7 +115,7 @@ public final class GuardConstants
     /**
      * Minimum delay for the next Knight attack.
      */
-    public static final int KNIGHT_ATTACK_DELAY_MIN = 10;
+    public static final int KNIGHT_ATTACK_DELAY_MIN = 5;
 
     /**
      * Basic bonus hp for knights
