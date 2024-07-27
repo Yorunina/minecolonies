@@ -1,5 +1,6 @@
 package com.minecolonies.api.colony.event;
 
+import com.ldtteam.structurize.blueprints.v1.Blueprint;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.buildings.IBuilding;
@@ -21,14 +22,17 @@ public class ColonyInformationChangedEvent extends AbstractColonyEvent
     private final ICitizenData citizen;
     private final ILocalResearch research;
 
+    private final Blueprint bluePrint;
 
-    public ColonyInformationChangedEvent(final @NotNull IColony colony, final IBuilding building, final @NotNull ICitizenData citizen)
+
+    public ColonyInformationChangedEvent(final @NotNull IColony colony, final IBuilding building, final ICitizenData citizen)
     {
         super(colony);
         this.type = Type.BUILD_REQUEST_COMPLETED;
         this.research = null;
         this.building = building;
         this.citizen = citizen;
+        this.bluePrint = null;
     }
 
     public ColonyInformationChangedEvent(final @NotNull IColony colony, final @NotNull ILocalResearch research)
@@ -38,6 +42,7 @@ public class ColonyInformationChangedEvent extends AbstractColonyEvent
         this.research = research;
         this.building = null;
         this.citizen = null;
+        this.bluePrint = null;
     }
 
     public ColonyInformationChangedEvent(final @NotNull IColony colony, final Type type)
@@ -47,7 +52,19 @@ public class ColonyInformationChangedEvent extends AbstractColonyEvent
         this.research = null;
         this.building = null;
         this.citizen = null;
+        this.bluePrint = null;
     }
+
+    public ColonyInformationChangedEvent(final @NotNull IColony colony, final ICitizenData citizen, final Blueprint bluePrint)
+    {
+        super(colony);
+        this.type = Type.SPECIAL_BUILD_REQUEST_COMPLETED;
+        this.research = null;
+        this.building = null;
+        this.citizen = citizen;
+        this.bluePrint = bluePrint;
+    }
+
 
     /**
      * Get what type of information changed on the colony.
@@ -73,6 +90,10 @@ public class ColonyInformationChangedEvent extends AbstractColonyEvent
     {
         return this.citizen;
     }
+    public Blueprint getBluePrint()
+    {
+        return this.bluePrint;
+    }
 
     /**
      * What information of the colony changed.
@@ -83,6 +104,7 @@ public class ColonyInformationChangedEvent extends AbstractColonyEvent
         TEAM_COLOR,
         FLAG,
         BUILD_REQUEST_COMPLETED,
-        RESEARCH_COMPLETED
+        RESEARCH_COMPLETED,
+        SPECIAL_BUILD_REQUEST_COMPLETED
     }
 }

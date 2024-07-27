@@ -9,6 +9,7 @@ import com.ldtteam.structurize.util.PlacementSettings;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.colony.buildings.event.BuildingConstructionEvent;
+import com.minecolonies.api.colony.event.ColonyInformationChangedEvent;
 import com.minecolonies.api.colony.workorders.IWorkOrder;
 import com.minecolonies.api.colony.workorders.WorkOrderType;
 import com.minecolonies.api.crafting.ItemStorage;
@@ -397,6 +398,7 @@ public abstract class AbstractEntityAIStructureWithWorkOrder<J extends AbstractJ
         {
             // TODO: Preferably want to use the display name of the building (in order to respect custom name) however this will require an event rework so it stores text components rather than strings
             String workOrderName = wo.getTranslationKey();
+            MinecraftForge.EVENT_BUS.post(new ColonyInformationChangedEvent(building.getColony(), job.getCitizen(), job.getBlueprint()));
             sendCompletionMessage(wo);
             final IColony colony = job.getColony();
             switch (wo.getWorkOrderType())
