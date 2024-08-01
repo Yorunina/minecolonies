@@ -13,12 +13,12 @@ import com.minecolonies.api.entity.ai.statemachine.AITarget;
 import com.minecolonies.api.entity.ai.statemachine.states.IAIState;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.tileentities.AbstractTileEntityColonyBuilding;
-import com.minecolonies.core.tileentities.TileEntityColonyBuilding;
-import com.minecolonies.core.tileentities.TileEntityRack;
+import com.minecolonies.api.util.BlockPosUtil;
 import com.minecolonies.api.util.InventoryUtils;
 import com.minecolonies.api.util.ItemStackUtils;
 import com.minecolonies.api.util.Log;
 import com.minecolonies.api.util.constant.Constants;
+import com.minecolonies.core.Network;
 import com.minecolonies.core.colony.buildings.AbstractBuilding;
 import com.minecolonies.core.colony.buildings.modules.WorkerBuildingModule;
 import com.minecolonies.core.colony.buildings.workerbuildings.BuildingDeliveryman;
@@ -28,10 +28,17 @@ import com.minecolonies.core.colony.jobs.JobDeliveryman;
 import com.minecolonies.core.colony.requestsystem.requests.StandardRequests.DeliveryRequest;
 import com.minecolonies.core.colony.requestsystem.requests.StandardRequests.PickupRequest;
 import com.minecolonies.core.entity.ai.workers.AbstractEntityAIInteract;
+import com.minecolonies.core.entity.pathfinding.SurfaceType;
+import com.minecolonies.core.network.messages.client.VanillaParticleMessage;
+import com.minecolonies.core.tileentities.TileEntityColonyBuilding;
+import com.minecolonies.core.tileentities.TileEntityRack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -43,10 +50,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.DELIVERY;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.DUMPING;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.IDLE;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.PICKUP;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.PREPARE_DELIVERY;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.START_WORKING;
+import static com.minecolonies.api.research.util.ResearchConstants.ARCHER_DAMAGE;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.StatisticsConstants.ITEMS_DELIVERED;
-import static com.minecolonies.api.util.constant.TranslationConstants.*;
+import static com.minecolonies.api.util.constant.TranslationConstants.COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_CHESTFULL;
+import static com.minecolonies.api.util.constant.TranslationConstants.COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_NAMEDCHESTFULL;
+import static com.minecolonies.api.util.constant.TranslationConstants.COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_NOWAREHOUSE;
 
 /**
  * Delivers item at needs.
@@ -347,6 +362,9 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
 
         if (!worker.isWorkerAtSiteWithMove(targetBuildingLocation.getInDimensionLocation(), MIN_DISTANCE_TO_WAREHOUSE))
         {
+            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ARCHER_DAMAGE) > 1) {
+                moveToPositionByTeleport(targetBuildingLocation.getInDimensionLocation(), worker);
+            }
             setDelay(WALK_DELAY);
             return DELIVERY;
         }
@@ -463,6 +481,25 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         job.finishRequest(true);
         return success ? START_WORKING : DUMPING;
     }
+
+    private void moveToPositionByTeleport(BlockPos desired, Entity entity) {
+        Network.getNetwork()
+                .sendToTrackingEntity(new VanillaParticleMessage(worker.getX(), worker.getY(), worker.getZ(), ParticleTypes.INSTANT_EFFECT), worker);
+        worker.queueSound(SoundEvents.ENDERMAN_TELEPORT, worker.blockPosition(), 5, 0);
+
+        final BlockPos tpPos = BlockPosUtil.findAround(world, desired, 8, 8,
+                (posworld, pos) -> SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos.below()), pos.below()) == SurfaceType.WALKABLE
+                        && SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos), pos) == SurfaceType.DROPABLE
+                        && SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos.above()), pos.above()) == SurfaceType.DROPABLE);
+        if (tpPos != null) {
+            entity.teleportTo(tpPos.getX() + 0.5, tpPos.getY(), tpPos.getZ() + 0.5);
+        }
+
+        Network.getNetwork()
+                .sendToTrackingEntity(new VanillaParticleMessage(desired.getX(), desired.getY(), desired.getZ(), ParticleTypes.INSTANT_EFFECT), worker);
+        worker.queueSound(SoundEvents.ENDERMAN_TELEPORT, desired, 5, 0);
+    }
+
 
     /**
      * Prepare deliveryman for delivery. Check if the building still needs the item and if the required items are still in the warehouse.
