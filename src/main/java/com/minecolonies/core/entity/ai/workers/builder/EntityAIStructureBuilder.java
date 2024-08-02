@@ -30,6 +30,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
+import static com.minecolonies.api.research.util.ResearchConstants.DRUID_USE_POTIONS;
+import static com.minecolonies.api.research.util.ResearchConstants.FARTHER_BUILDING_DISTANCE;
 import static com.minecolonies.api.util.constant.TranslationConstants.*;
 
 /**
@@ -204,7 +206,10 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
             // Reset working position when standing ontop
             workFrom = null;
         }
-
+        int buildDistance = 10;
+        if (building.getColony().getResearchManager().getResearchEffects().getEffectStrength(FARTHER_BUILDING_DISTANCE) > 0) {
+            buildDistance = buildDistance + 10;
+        }
         if (workFrom == null)
         {
             if (gotoPath == null || gotoPath.isCancelled())
@@ -212,7 +217,7 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
                 final PathJobMoveCloseToXNearY pathJob = new PathJobMoveCloseToXNearY(world,
                   currentBlock,
                   job.getWorkOrder().getLocation(),
-                  5,
+                        buildDistance,
                   worker);
                 gotoPath = ((MinecoloniesAdvancedPathNavigate) worker.getNavigation()).setPathJob(pathJob, currentBlock, 1.0, false);
                 pathJob.getPathingOptions().canDrop = false;
@@ -234,7 +239,7 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
             return false;
         }
 
-        if (BlockPosUtil.getDistance2D(worker.blockPosition(), currentBlock) > 5)
+        if (BlockPosUtil.getDistance2D(worker.blockPosition(), currentBlock) > buildDistance)
         {
             double distToBuilding = BlockPosUtil.dist(workFrom, job.getWorkOrder().getLocation());
             workFrom = null;

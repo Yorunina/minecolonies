@@ -50,18 +50,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.DELIVERY;
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.DUMPING;
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.IDLE;
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.PICKUP;
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.PREPARE_DELIVERY;
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.START_WORKING;
-import static com.minecolonies.api.research.util.ResearchConstants.ARCHER_DAMAGE;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
+import static com.minecolonies.api.research.util.ResearchConstants.ENDER_POSTMAN;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.StatisticsConstants.ITEMS_DELIVERED;
-import static com.minecolonies.api.util.constant.TranslationConstants.COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_CHESTFULL;
-import static com.minecolonies.api.util.constant.TranslationConstants.COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_NAMEDCHESTFULL;
-import static com.minecolonies.api.util.constant.TranslationConstants.COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_NOWAREHOUSE;
+import static com.minecolonies.api.util.constant.TranslationConstants.*;
 
 /**
  * Delivers item at needs.
@@ -175,6 +168,15 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         worker.getCitizenData().setVisibleStatus(DELIVERING);
 
         final BlockPos pickupTarget = currentTask.getRequester().getLocation().getInDimensionLocation();
+
+        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+            moveToPositionByTeleport(pickupTarget, worker);
+            if (pickupTarget != BlockPos.ZERO && !worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
+            {
+                return PICKUP;
+            }
+        }
+
         if (pickupTarget != BlockPos.ZERO && !worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
         {
             return PICKUP;
@@ -312,6 +314,15 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
             return START_WORKING;
         }
 
+        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+            moveToPositionByTeleport(warehouse.getPosition(), worker);
+            if (!worker.isWorkerAtSiteWithMove(warehouse.getPosition(), MIN_DISTANCE_TO_WAREHOUSE))
+            {
+                setDelay(WALK_DELAY);
+                return DUMPING;
+            }
+        }
+
         if (!worker.isWorkerAtSiteWithMove(warehouse.getPosition(), MIN_DISTANCE_TO_WAREHOUSE))
         {
             setDelay(WALK_DELAY);
@@ -360,11 +371,17 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
             return START_WORKING;
         }
 
+        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+            moveToPositionByTeleport(targetBuildingLocation.getInDimensionLocation(), worker);
+            if (!worker.isWorkerAtSiteWithMove(targetBuildingLocation.getInDimensionLocation(), MIN_DISTANCE_TO_WAREHOUSE))
+            {
+                setDelay(WALK_DELAY);
+                return DELIVERY;
+            }
+        }
+
         if (!worker.isWorkerAtSiteWithMove(targetBuildingLocation.getInDimensionLocation(), MIN_DISTANCE_TO_WAREHOUSE))
         {
-            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ARCHER_DAMAGE) > 1) {
-                moveToPositionByTeleport(targetBuildingLocation.getInDimensionLocation(), worker);
-            }
             setDelay(WALK_DELAY);
             return DELIVERY;
         }
@@ -557,6 +574,14 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         {
             job.finishRequest(false);
             return START_WORKING;
+        }
+
+        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+            moveToPositionByTeleport(location.getInDimensionLocation(), worker);
+            if (walkToBlock(location.getInDimensionLocation()))
+            {
+                return PREPARE_DELIVERY;
+            }
         }
 
         if (walkToBlock(location.getInDimensionLocation()))

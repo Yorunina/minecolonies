@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static com.minecolonies.api.research.util.ResearchConstants.SMELTING_MASTER;
 import static com.minecolonies.api.util.constant.Constants.*;
 import static com.minecolonies.api.util.constant.Suppression.MAGIC_NUMBERS_SHOULD_NOT_BE_USED;
 import static com.minecolonies.api.util.constant.Suppression.OVERRIDE_EQUALS;
@@ -86,20 +87,38 @@ public class BuildingSmeltery extends AbstractBuilding
     @SuppressWarnings(MAGIC_NUMBERS_SHOULD_NOT_BE_USED)
     public int ingotMultiplier(final int skillLevel, final Random random)
     {
-        switch (getBuildingLevel())
-        {
-            case 1:
-                return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel / 2) == 0 ? DOUBLE : 1;
-            case 2:
-                return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel) == 0 ? DOUBLE : 1;
-            case 3:
-                return 2;
-            case 4:
-                return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel / 2) == 0 ? TRIPLE : DOUBLE;
-            case 5:
-                return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel) == 0 ? TRIPLE : DOUBLE;
-            default:
-                return 1;
+        if (colony.getResearchManager().getResearchEffects().getEffectStrength(SMELTING_MASTER) > 0) {
+            switch (getBuildingLevel())
+            {
+                case 1:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel / 2) == 0 ? TRIPLE : 1;
+                case 2:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel) == 0 ? TRIPLE : 1;
+                case 3:
+                    return TRIPLE;
+                case 4:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel / 2) == 0 ? FIVE_TIMES : TRIPLE;
+                case 5:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel) == 0 ? FIVE_TIMES : TRIPLE;
+                default:
+                    return 1;
+            }
+        } else {
+            switch (getBuildingLevel())
+            {
+                case 1:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel / 2) == 0 ? DOUBLE : 1;
+                case 2:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel) == 0 ? DOUBLE : 1;
+                case 3:
+                    return 2;
+                case 4:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel / 2) == 0 ? TRIPLE : DOUBLE;
+                case 5:
+                    return random.nextInt(ONE_HUNDRED_PERCENT - skillLevel) == 0 ? TRIPLE : DOUBLE;
+                default:
+                    return 1;
+            }
         }
     }
 

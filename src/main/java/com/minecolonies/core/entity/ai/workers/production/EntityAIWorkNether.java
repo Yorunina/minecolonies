@@ -660,6 +660,10 @@ public class EntityAIWorkNether extends AbstractEntityAICrafting<JobNetherWorker
         }
         else if (block == Blocks.NETHER_QUARTZ_ORE)
         {
+            return rnd.nextInt(3, 7);
+        }
+        else if (block == Blocks.ANCIENT_DEBRIS)
+        {
             return rnd.nextInt(2, 5);
         }
         else

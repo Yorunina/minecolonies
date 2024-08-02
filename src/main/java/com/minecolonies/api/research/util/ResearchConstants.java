@@ -165,6 +165,13 @@ public final class ResearchConstants
     public static final ResourceLocation RECIPE_MODE       = new ResourceLocation(Constants.MOD_ID, "effects/recipemodeunlock");
     public static final ResourceLocation BUILDER_MODE      = new ResourceLocation(Constants.MOD_ID, "effects/buildermodeunlock");
     public static final ResourceLocation DRUID_USE_POTIONS = new ResourceLocation(Constants.MOD_ID, "effects/consumepotions");
+    public static final ResourceLocation DRUID_MORE_POWERFUL_POTION = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/druidmorepowerfulpotion");
+    public static final ResourceLocation FARTHER_BUILDING_DISTANCE = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/fartherbuildingdistance");
+    public static final ResourceLocation RESOURCE_BEE = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/resourcebee");
+    public static final ResourceLocation AGILITY_IS_DAMAGE = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/agilityisdamage");
+    public static final ResourceLocation EFFECTIVE_LOGGING = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/effectivelogging");
+    public static final ResourceLocation SMELTING_MASTER = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/smeltingmaster");
+    public static final ResourceLocation ENDER_POSTMAN = new ResourceLocation(Constants.KUBEJS_MOD_ID, "effects/enderpostman");
     public static final ResourceLocation SOFT_SHOES        = new ResourceLocation(Constants.MOD_ID, "effects/softshoesunlock");
     public static final ResourceLocation FISH_TREASURE     = new ResourceLocation(Constants.MOD_ID, "effects/fishingtreasure");
     public static final ResourceLocation NETHER_LOG        = new ResourceLocation(Constants.MOD_ID, "effects/netherexpeditionlog");

@@ -10,6 +10,7 @@ public final class Constants
 {
     public static final String MOD_ID                           = "minecolonies";
     public static final String HARVESTCRAFTMODID                = "harvestcraft";
+    public static final String KUBEJS_MOD_ID                = "kubejs";
     public static final int    ROTATE_0_TIMES                   = 0;
     public static final int    ROTATE_ONCE                      = 1;
     public static final int    ROTATE_TWICE                     = 2;
@@ -51,6 +52,8 @@ public final class Constants
     public static final int    WANDER_CHANCE                    = 35;
     public static final int    DOUBLE                           = 2;
     public static final int    TRIPLE                           = 3;
+    public static final int    FOUR_TIMES                        = 4;
+    public static final int    FIVE_TIMES                        = 5;
     public static final int    BLOCKS_PER_CHUNK                 = 16;
     public static final int    NINETY_DEGREE                    = 90;
     public static final int    HALF_ROTATION                    = 180;

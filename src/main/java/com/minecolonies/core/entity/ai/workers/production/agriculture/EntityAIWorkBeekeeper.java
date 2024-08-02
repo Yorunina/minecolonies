@@ -1,6 +1,7 @@
 package com.minecolonies.core.entity.ai.workers.production.agriculture;
 
 import com.google.common.reflect.TypeToken;
+import com.minecolonies.api.colony.IColonyManager;
 import com.minecolonies.api.colony.interactionhandling.ChatPriority;
 import com.minecolonies.api.colony.requestsystem.requestable.StackList;
 import com.minecolonies.api.compatibility.Compatibility;
@@ -38,6 +39,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
+import static com.minecolonies.api.research.util.ResearchConstants.MORE_ORES;
+import static com.minecolonies.api.research.util.ResearchConstants.RESOURCE_BEE;
 import static com.minecolonies.api.util.constant.BuildingConstants.BUILDING_FLOWER_LIST;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.ToolLevelConstants.TOOL_LEVEL_WOOD_OR_GOLD;
@@ -365,6 +368,14 @@ public class EntityAIWorkBeekeeper extends AbstractEntityAIInteract<JobBeekeeper
             }
             world.setBlockAndUpdate(hive, world.getBlockState(hive).setValue(BlockStateProperties.LEVEL_HONEY, 0));
             worker.getCitizenExperienceHandler().addExperience(EXP_PER_HARVEST);
+
+            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(RESOURCE_BEE) > 0)
+            {
+                final int level = building.getBuildingLevel();
+                InventoryUtils.transferItemStackIntoNextBestSlotInItemHandler(IColonyManager.getInstance().getCompatibilityManager().getRandomLuckyOre(100, level),
+                        worker.getInventoryCitizen());
+            }
+
             lastHarvestedBottle = false;
         }
         else if (!building.getHarvestTypes().equals(BuildingBeekeeper.HONEYCOMB) && itemStack.getItem() == Items.GLASS_BOTTLE)

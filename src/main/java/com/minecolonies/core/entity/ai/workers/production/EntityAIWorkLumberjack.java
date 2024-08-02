@@ -50,6 +50,8 @@ import java.util.Objects;
 
 import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
 import static com.minecolonies.api.items.ModTags.fungi;
+import static com.minecolonies.api.research.util.ResearchConstants.EFFECTIVE_LOGGING;
+import static com.minecolonies.api.research.util.ResearchConstants.RESOURCE_BEE;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.StatisticsConstants.ITEM_OBTAINED;
 import static com.minecolonies.api.util.constant.StatisticsConstants.TREE_CUT;
@@ -602,6 +604,7 @@ public class EntityAIWorkLumberjack extends AbstractEntityAICrafting<JobLumberja
     protected List<ItemStack> increaseBlockDrops(final List<ItemStack> drops)
     {
         final List<ItemStack> newDrops = new ArrayList<>();
+        boolean effectiveLogging = worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(EFFECTIVE_LOGGING) > 0;
         for (final ItemStack stack : drops)
         {
             if (world.getRandom().nextInt(100) > 95)
@@ -615,6 +618,12 @@ public class EntityAIWorkLumberjack extends AbstractEntityAICrafting<JobLumberja
                         newDrops.add(fungus);
                     }
                 }
+            }
+
+            if (stack.is(ItemTags.LOGS) && effectiveLogging)
+            {
+                newDrops.add(stack);
+                newDrops.add(stack);
             }
         }
         if (newDrops.isEmpty())

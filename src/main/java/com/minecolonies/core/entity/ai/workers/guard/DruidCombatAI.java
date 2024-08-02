@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+import static com.minecolonies.api.research.util.ResearchConstants.DRUID_MORE_POWERFUL_POTION;
 import static com.minecolonies.api.research.util.ResearchConstants.DRUID_USE_POTIONS;
 import static com.minecolonies.api.util.constant.GuardConstants.*;
 import static com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIFight.SPEED_LEVEL_BONUS;
@@ -131,11 +132,17 @@ public class DruidCombatAI extends AttackMoveAI<EntityCitizen>
         final MobEffect effect;
         final ItemStack stack = new ItemStack(Items.SPLASH_POTION);
         boolean gotMaterial = false;
+        int effectLevel = 0;
         BiPredicate<LivingEntity, MobEffect> predicate;
         if (user.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(DRUID_USE_POTIONS) > 0
               && InventoryUtils.hasItemInItemHandler(user.getInventoryCitizen(), item -> item.getItem() == ModItems.magicpotion))
         {
             gotMaterial = true;
+            effectLevel = 2;
+            if (user.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(DRUID_MORE_POWERFUL_POTION) > 0)
+            {
+                effectLevel = 4;
+            }
         }
         if (AbstractEntityAIGuard.isAttackableTarget(user, target))
         {
@@ -148,7 +155,7 @@ public class DruidCombatAI extends AttackMoveAI<EntityCitizen>
             predicate = (entity, eff) -> !AbstractEntityAIGuard.isAttackableTarget(user, entity);
         }
 
-        PotionUtils.setCustomEffects(stack, Collections.singleton(new MobEffectInstance(effect, time, gotMaterial ? 4 : 0)));
+        PotionUtils.setCustomEffects(stack, Collections.singleton(new MobEffectInstance(effect, time, effectLevel)));
         DruidPotionEntity.throwPotionAt(stack, target, user, user.getCommandSenderWorld(), POTION_VELOCITY, inaccuracy, predicate);
 
         if (gotMaterial)
