@@ -13,10 +13,7 @@ import com.minecolonies.api.entity.ai.statemachine.AITarget;
 import com.minecolonies.api.entity.ai.statemachine.states.IAIState;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.tileentities.AbstractTileEntityColonyBuilding;
-import com.minecolonies.api.util.BlockPosUtil;
-import com.minecolonies.api.util.InventoryUtils;
-import com.minecolonies.api.util.ItemStackUtils;
-import com.minecolonies.api.util.Log;
+import com.minecolonies.api.util.*;
 import com.minecolonies.api.util.constant.Constants;
 import com.minecolonies.core.Network;
 import com.minecolonies.core.colony.buildings.AbstractBuilding;
@@ -52,6 +49,7 @@ import java.util.stream.Collectors;
 
 import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
 import static com.minecolonies.api.research.util.ResearchConstants.ENDER_POSTMAN;
+import static com.minecolonies.api.util.constant.CitizenConstants.DEFAULT_RANGE_FOR_DELAY;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.StatisticsConstants.ITEMS_DELIVERED;
 import static com.minecolonies.api.util.constant.TranslationConstants.*;
@@ -169,17 +167,15 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
 
         final BlockPos pickupTarget = currentTask.getRequester().getLocation().getInDimensionLocation();
 
-        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
-            moveToPositionByTeleport(pickupTarget, worker);
-            if (pickupTarget != BlockPos.ZERO && !worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
+        if (pickupTarget != BlockPos.ZERO && !EntityUtils.isLivingAtSite(worker, pickupTarget.getX(), pickupTarget.getY(), pickupTarget.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+        {
+            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+                moveToPositionByTeleport(pickupTarget, worker);
+            }
+            if (!worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
             {
                 return PICKUP;
             }
-        }
-
-        if (pickupTarget != BlockPos.ZERO && !worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
-        {
-            return PICKUP;
         }
 
         final IBuilding pickupBuilding = building.getColony().getBuildingManager().getBuilding(pickupTarget);
@@ -314,19 +310,17 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
             return START_WORKING;
         }
 
-        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
-            moveToPositionByTeleport(warehouse.getPosition(), worker);
-            if (!worker.isWorkerAtSiteWithMove(warehouse.getPosition(), MIN_DISTANCE_TO_WAREHOUSE))
+        BlockPos targetPosition = warehouse.getPosition();
+        if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+        {
+            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+                moveToPositionByTeleport(targetPosition, worker);
+            }
+            if (!worker.isWorkerAtSiteWithMove(targetPosition, MIN_DISTANCE_TO_WAREHOUSE))
             {
                 setDelay(WALK_DELAY);
                 return DUMPING;
             }
-        }
-
-        if (!worker.isWorkerAtSiteWithMove(warehouse.getPosition(), MIN_DISTANCE_TO_WAREHOUSE))
-        {
-            setDelay(WALK_DELAY);
-            return DUMPING;
         }
 
         warehouse.getTileEntity().dumpInventoryIntoWareHouse(worker.getInventoryCitizen());
@@ -370,23 +364,21 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
             Log.getLogger().info(worker.getCitizenColonyHandler().getColony().getName() + ": " + worker.getName() + ": Can't inter dimension yet: ");
             return START_WORKING;
         }
+        BlockPos targetLocation = targetBuildingLocation.getInDimensionLocation();
 
-        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
-            moveToPositionByTeleport(targetBuildingLocation.getInDimensionLocation(), worker);
-            if (!worker.isWorkerAtSiteWithMove(targetBuildingLocation.getInDimensionLocation(), MIN_DISTANCE_TO_WAREHOUSE))
+        if (!EntityUtils.isLivingAtSite(worker, targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+        {
+            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+                moveToPositionByTeleport(targetLocation, worker);
+            }
+            if (!worker.isWorkerAtSiteWithMove(targetLocation, MIN_DISTANCE_TO_WAREHOUSE))
             {
                 setDelay(WALK_DELAY);
                 return DELIVERY;
             }
         }
 
-        if (!worker.isWorkerAtSiteWithMove(targetBuildingLocation.getInDimensionLocation(), MIN_DISTANCE_TO_WAREHOUSE))
-        {
-            setDelay(WALK_DELAY);
-            return DELIVERY;
-        }
-
-        final BlockEntity tileEntity = world.getBlockEntity(targetBuildingLocation.getInDimensionLocation());
+        final BlockEntity tileEntity = world.getBlockEntity(targetLocation);
 
         if (!(tileEntity instanceof TileEntityColonyBuilding) || ((AbstractTileEntityColonyBuilding) tileEntity).getBuilding() == null)
         {
@@ -466,8 +458,7 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
                           .triggerInteraction(new PosBasedInteraction(Component.translatable(COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_CHESTFULL,
                             Component.literal(" :" + targetBuilding.getSchematicName())),
                             ChatPriority.IMPORTANT,
-                            Component.translatable(COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_CHESTFULL),
-                            targetBuildingLocation.getInDimensionLocation()));
+                            Component.translatable(COM_MINECOLONIES_COREMOD_JOB_DELIVERYMAN_CHESTFULL), targetLocation));
                     }
                 }
 
@@ -504,12 +495,12 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
                 .sendToTrackingEntity(new VanillaParticleMessage(worker.getX(), worker.getY(), worker.getZ(), ParticleTypes.INSTANT_EFFECT), worker);
         worker.queueSound(SoundEvents.ENDERMAN_TELEPORT, worker.blockPosition(), 5, 0);
 
-        final BlockPos tpPos = BlockPosUtil.findAround(world, desired, 8, 8,
+        final BlockPos tpPos = BlockPosUtil.findAround(world, desired, 10, 10,
                 (posworld, pos) -> SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos.below()), pos.below()) == SurfaceType.WALKABLE
                         && SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos), pos) == SurfaceType.DROPABLE
                         && SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos.above()), pos.above()) == SurfaceType.DROPABLE);
         if (tpPos != null) {
-            entity.teleportTo(tpPos.getX() + 0.5, tpPos.getY(), tpPos.getZ() + 0.5);
+            entity.teleportTo(tpPos.getX(), tpPos.getY(), tpPos.getZ());
         }
 
         Network.getNetwork()
@@ -576,17 +567,17 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
             return START_WORKING;
         }
 
-        if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
-            moveToPositionByTeleport(location.getInDimensionLocation(), worker);
+
+        BlockPos targetPosition = location.getInDimensionLocation();
+        if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), DEFAULT_RANGE_FOR_DELAY))
+        {
+            if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+                moveToPositionByTeleport(targetPosition, worker);
+            }
             if (walkToBlock(location.getInDimensionLocation()))
             {
                 return PREPARE_DELIVERY;
             }
-        }
-
-        if (walkToBlock(location.getInDimensionLocation()))
-        {
-            return PREPARE_DELIVERY;
         }
 
         if (getInventory().isFull())
@@ -656,21 +647,26 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         if (currentTask == null)
         {
             // If there are no deliveries/pickups pending, just loiter around the warehouse.
-            if (!worker.isWorkerAtSiteWithMove(getAndCheckWareHouse().getPosition(), MIN_DISTANCE_TO_WAREHOUSE))
+            BlockPos targetPosition = getAndCheckWareHouse().getPosition();
+            if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
             {
-                setDelay(WALK_DELAY);
-                return START_WORKING;
+                if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
+                    moveToPositionByTeleport(targetPosition, worker);
+                }
+                if (!worker.isWorkerAtSiteWithMove(targetPosition, MIN_DISTANCE_TO_WAREHOUSE))
+                {
+                    setDelay(WALK_DELAY);
+                    return START_WORKING;
+                }
+            }
+
+            if (!worker.getInventoryCitizen().isEmpty())
+            {
+                return DUMPING;
             }
             else
             {
-                if (!worker.getInventoryCitizen().isEmpty())
-                {
-                    return DUMPING;
-                }
-                else
-                {
-                    return START_WORKING;
-                }
+                return START_WORKING;
             }
         }
         if (currentTask instanceof DeliveryRequest)
