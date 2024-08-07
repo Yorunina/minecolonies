@@ -177,6 +177,10 @@ public class Permissions implements IPermissions
                 case NEUTRAL:
                     rank.addPermission(Action.ACCESS_FREE_BLOCKS);
                     rank.addPermission(Action.ACCESS_TOGGLEABLES);
+                    rank.addPermission(Action.TOSS_ITEM);
+                    rank.addPermission(Action.PICKUP_ITEM);
+                    rank.addPermission(Action.RIGHTCLICK_BLOCK);
+                    rank.addPermission(Action.RIGHTCLICK_ENTITY);
                     rank.addPermission(Action.MAP_BORDER);
                     break;
                 case HOSTILE:
