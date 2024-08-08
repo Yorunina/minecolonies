@@ -34,6 +34,7 @@ import com.minecolonies.core.placementhandlers.main.SurvivalHandler;
 import com.minecolonies.core.recipes.FoodIngredient;
 import com.minecolonies.core.recipes.PlantIngredient;
 import com.minecolonies.core.structures.MineColoniesStructures;
+import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -64,6 +65,8 @@ public class MineColonies
 
     public static final Capability<IColonyManagerCapability> COLONY_MANAGER_CAP = CapabilityManager.get(new CapabilityToken<>() {});
 
+    public static final GameRules.Key<GameRules.BooleanValue> BUILDER_INF_RESOURCES = GameRules.register("builderInfResources", GameRules.Category.MISC, GameRules.BooleanValue.create(false));
+    public static final GameRules.Key<GameRules.BooleanValue> CITIZEN_SKILL_GENETICS = GameRules.register("citizenSkillGenetics", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
     /**
      * The config instance.
      */

@@ -27,6 +27,7 @@ import static com.minecolonies.api.util.SoundUtils.playSoundAtCitizenWith;
 import static com.minecolonies.api.util.constant.CitizenConstants.MAX_CITIZEN_LEVEL;
 import static com.minecolonies.api.util.constant.Constants.MAX_BUILDING_LEVEL;
 import static com.minecolonies.api.util.constant.NbtTagConstants.*;
+import static com.minecolonies.core.MineColonies.CITIZEN_SKILL_GENETICS;
 
 /**
  * The citizen skill handler of the citizen.
@@ -85,7 +86,7 @@ public class CitizenSkillHandler implements ICitizenSkillHandler
         final int levelCap = (int) colony.getOverallHappiness();
         init(levelCap);
 
-        final int bonusPoints = 25 + rand.nextInt(25);
+        int bonusPoints = 25 + rand.nextInt(25);
 
         int totalPoints = 0;
         for (final Skill skill : Skill.values())
@@ -93,6 +94,10 @@ public class CitizenSkillHandler implements ICitizenSkillHandler
             final int firstRoleModelLevel = roleModelA.getCitizenSkillHandler().getSkills().get(skill).getA();
             final int secondRoleModelLevel = roleModelB.getCitizenSkillHandler().getSkills().get(skill).getA();
             totalPoints += firstRoleModelLevel + secondRoleModelLevel;
+        }
+        
+        if (colony.getWorld().getGameRules().getBoolean(CITIZEN_SKILL_GENETICS)) {
+            bonusPoints += (int) (totalPoints * 0.1);
         }
 
         for (final Skill skill : Skill.values())

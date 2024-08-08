@@ -22,11 +22,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +39,7 @@ import java.util.function.Function;
 
 import static com.minecolonies.api.util.constant.CitizenConstants.RUN_AWAY_SPEED;
 import static com.minecolonies.api.util.constant.StatisticsConstants.BLOCKS_PLACED;
+import static com.minecolonies.core.MineColonies.BUILDER_INF_RESOURCES;
 
 /**
  * Represents a build task for the StructureIterator AI.
@@ -280,6 +283,9 @@ public class BuildingStructureHandler<J extends AbstractJobStructure<?, J>, B ex
     @Override
     public boolean isCreative()
     {
+        if (getWorld().getGameRules().getBoolean(BUILDER_INF_RESOURCES)) {
+            return true;
+        }
         return Constants.BUILDER_INF_RESOURECES;
     }
 
