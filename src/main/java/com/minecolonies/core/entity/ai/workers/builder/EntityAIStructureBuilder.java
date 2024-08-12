@@ -68,8 +68,8 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
     {
         super(job);
         super.registerTargets(
-          new AITarget(IDLE, START_WORKING, 100),
-          new AITarget(START_WORKING, this::checkForWorkOrder, this::startWorkingAtOwnBuilding, 100)
+                new AITarget(IDLE, START_WORKING, 100),
+                new AITarget(START_WORKING, this::checkForWorkOrder, this::startWorkingAtOwnBuilding, 100)
         );
         worker.setCanPickUpLoot(true);
     }
@@ -183,7 +183,7 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
     @Override
     protected boolean mineBlock(@NotNull final BlockPos blockToMine, @NotNull final BlockPos safeStand)
     {
-        return mineBlock(blockToMine, safeStand, true, false, !IColonyManager.getInstance().getCompatibilityManager().isOre(world.getBlockState(blockToMine)), null);
+        return mineBlock(blockToMine, safeStand, true, !IColonyManager.getInstance().getCompatibilityManager().isOre(world.getBlockState(blockToMine)), null);
     }
 
     @Override
@@ -215,10 +215,10 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
             if (gotoPath == null || gotoPath.isCancelled())
             {
                 final PathJobMoveCloseToXNearY pathJob = new PathJobMoveCloseToXNearY(world,
-                  currentBlock,
-                  job.getWorkOrder().getLocation(),
+                        currentBlock,
+                        job.getWorkOrder().getLocation(),
                         buildDistance,
-                  worker);
+                        worker);
                 gotoPath = ((MinecoloniesAdvancedPathNavigate) worker.getNavigation()).setPathJob(pathJob, currentBlock, 1.0, false);
                 pathJob.getPathingOptions().canDrop = false;
             }
@@ -296,27 +296,27 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
         {
             case REPAIR:
                 message = Component.translatable(
-                  COM_MINECOLONIES_COREMOD_ENTITY_BUILDER_REPAIRING_COMPLETE,
-                  wo.getDisplayName(),
-                  position.getX(),
-                  position.getY(),
-                  position.getZ());
+                        COM_MINECOLONIES_COREMOD_ENTITY_BUILDER_REPAIRING_COMPLETE,
+                        wo.getDisplayName(),
+                        position.getX(),
+                        position.getY(),
+                        position.getZ());
                 break;
             case REMOVE:
                 message = Component.translatable(
-                  COM_MINECOLONIES_COREMOD_ENTITY_BUILDER_DECONSTRUCTION_COMPLETE,
-                  wo.getDisplayName(),
-                  position.getX(),
-                  position.getY(),
-                  position.getZ());
+                        COM_MINECOLONIES_COREMOD_ENTITY_BUILDER_DECONSTRUCTION_COMPLETE,
+                        wo.getDisplayName(),
+                        position.getX(),
+                        position.getY(),
+                        position.getZ());
                 break;
             default:
                 message = Component.translatable(
-                  COM_MINECOLONIES_COREMOD_ENTITY_BUILDER_BUILD_COMPLETE,
-                  wo.getDisplayName(),
-                  position.getX(),
-                  position.getY(),
-                  position.getZ());
+                        COM_MINECOLONIES_COREMOD_ENTITY_BUILDER_BUILD_COMPLETE,
+                        wo.getDisplayName(),
+                        position.getX(),
+                        position.getY(),
+                        position.getZ());
                 break;
         }
 

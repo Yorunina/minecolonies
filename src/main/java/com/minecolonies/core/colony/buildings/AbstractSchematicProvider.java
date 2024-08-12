@@ -366,13 +366,13 @@ public abstract class AbstractSchematicProvider implements ISchematicProvider, I
             else
             {
                 Log.getLogger()
-                  .error(String.format("Failed to get rotation of building %s at pos: %s with path: %s", getBuildingDisplayName(), getPosition().toShortString(), this.path));
+                  .warn(String.format("Failed to get rotation of building %s at pos: %s with path: %s", getBuildingDisplayName(), getPosition().toShortString(), this.path));
             }
         }
         catch (Exception e)
         {
             Log.getLogger()
-              .error(String.format("Failed to get rotation of building %s at pos: %s with path: %s", getBuildingDisplayName(), getPosition().toShortString(), this.path), e);
+              .warn(String.format("Failed to get rotation of building %s at pos: %s with path: %s", getBuildingDisplayName(), getPosition().toShortString(), this.path), e);
             return 0;
         }
 
