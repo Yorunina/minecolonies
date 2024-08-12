@@ -66,7 +66,7 @@ public class MineColonies
     public static final Capability<IColonyManagerCapability> COLONY_MANAGER_CAP = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static final GameRules.Key<GameRules.BooleanValue> BUILDER_INF_RESOURCES = GameRules.register("builderInfResources", GameRules.Category.MISC, GameRules.BooleanValue.create(false));
-    public static final GameRules.Key<GameRules.BooleanValue> CITIZEN_SKILL_GENETICS = GameRules.register("citizenSkillGenetics", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
+    public static final GameRules.Key<GameRules.IntegerValue> CITIZEN_SKILL_GENETICS = GameRules.register("citizenSkillGenetics", GameRules.Category.MISC, GameRules.IntegerValue.create(10));
     /**
      * The config instance.
      */

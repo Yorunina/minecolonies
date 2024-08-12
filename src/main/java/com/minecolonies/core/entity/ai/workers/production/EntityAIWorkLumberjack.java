@@ -6,7 +6,12 @@ import com.minecolonies.api.entity.ai.statemachine.AITarget;
 import com.minecolonies.api.entity.ai.statemachine.states.IAIState;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.items.ModTags;
-import com.minecolonies.api.util.*;
+import com.minecolonies.api.util.BlockPosUtil;
+import com.minecolonies.api.util.EntityUtils;
+import com.minecolonies.api.util.InventoryUtils;
+import com.minecolonies.api.util.ItemStackUtils;
+import com.minecolonies.api.util.Log;
+import com.minecolonies.api.util.MathUtils;
 import com.minecolonies.api.util.constant.ColonyConstants;
 import com.minecolonies.api.util.constant.Constants;
 import com.minecolonies.api.util.constant.ToolType;
@@ -34,7 +39,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.NetherrackBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
@@ -45,13 +54,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 
-import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.IDLE;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.LUMBERJACK_CHOP_TREE;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.LUMBERJACK_GATHERING;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.LUMBERJACK_GATHERING_2;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.LUMBERJACK_NO_TREES_FOUND;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.LUMBERJACK_SEARCHING_TREE;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.LUMBERJACK_START_WORKING;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.PREPARING;
+import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.START_WORKING;
 import static com.minecolonies.api.items.ModTags.fungi;
 import static com.minecolonies.api.research.util.ResearchConstants.EFFECTIVE_LOGGING;
-import static com.minecolonies.api.research.util.ResearchConstants.RESOURCE_BEE;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.StatisticsConstants.ITEM_OBTAINED;
 import static com.minecolonies.api.util.constant.StatisticsConstants.TREE_CUT;
@@ -66,6 +84,10 @@ public class EntityAIWorkLumberjack extends AbstractEntityAICrafting<JobLumberja
      * The render name to render logs.
      */
     public static final String RENDER_META_LOGS = "logs";
+
+    public static final int VEIN_MINE_BLOCK_MAX = 128;
+
+    public static final int VEIN_MINE_BLOCK_MAX_SIZE = 7;
 
     /**
      * The range in which the lumberjack searches for trees.
@@ -555,7 +577,7 @@ public class EntityAIWorkLumberjack extends AbstractEntityAICrafting<JobLumberja
             if (job.getTree().isDynamicTree())
             {
                 // Dynamic Trees handles drops/tool dmg upon tree break, so those are set to false here
-                if (!mineBlock(log, workFrom, false, false, Compatibility.getDynamicTreeBreakAction(
+                if (!mineBlock(log, workFrom, false, false, false, Compatibility.getDynamicTreeBreakAction(
                   world,
                   log,
                   worker.getItemInHand(InteractionHand.MAIN_HAND),
@@ -569,6 +591,60 @@ public class EntityAIWorkLumberjack extends AbstractEntityAICrafting<JobLumberja
                     this.incrementActionsDone();
                 }
                 // Wait 5 sec for falling trees(dyn tree feature)/drops
+                setDelay(100);
+            }
+            else if (true)
+            {
+                final ItemStack tool = worker.getMainHandItem();
+
+                List<BlockPos> miningBlocks = new ArrayList<>();
+                Queue<BlockPos> queue = new LinkedList<>();
+                List<BlockPos> visited = new ArrayList<>();
+
+                queue.add(log);
+                visited.add(log);
+
+                BlockState centerState = world.getBlockState(log);
+
+                while (!queue.isEmpty() && miningBlocks.size() < VEIN_MINE_BLOCK_MAX) {
+                    BlockPos currentPos = queue.poll();
+                    miningBlocks.add(currentPos);
+
+                    for (int x = -1; x <= 1; x++) {
+                        for (int z = -1; z <= 1; z++) {
+                            for (int y = -1; y <= 1; y++) {
+                                BlockPos neighborPos = currentPos.offset(x, y, z);
+                                // Check if neighbor position is within the size limit and hasn't been visited
+                                int dx1 = neighborPos.getX() - log.getX() + VEIN_MINE_BLOCK_MAX_SIZE;
+                                int dy1 = neighborPos.getY() - log.getY() + VEIN_MINE_BLOCK_MAX_SIZE;
+                                int dz1 = neighborPos.getZ() - log.getZ() + VEIN_MINE_BLOCK_MAX_SIZE;
+                                if (Math.abs(dx1 - VEIN_MINE_BLOCK_MAX_SIZE) <= VEIN_MINE_BLOCK_MAX_SIZE
+                                        && Math.abs(dy1 - VEIN_MINE_BLOCK_MAX_SIZE) <= VEIN_MINE_BLOCK_MAX_SIZE
+                                        && Math.abs(dz1 - VEIN_MINE_BLOCK_MAX_SIZE) <= VEIN_MINE_BLOCK_MAX_SIZE
+                                        && !visited.contains(neighborPos)) {
+
+                                    visited.add(neighborPos);
+
+                                    BlockState neighborState = world.getBlockState(neighborPos);
+                                    if (neighborState.getBlock().equals(centerState.getBlock())) {
+                                        queue.add(neighborPos);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                int currentDamage = tool.getDamageValue();
+                for (BlockPos currentPos:miningBlocks) {
+                    if (currentDamage > tool.getMaxDamage()) {
+                        break;
+                    }
+                    mineBlock(currentPos, workFrom, false, true, true, null);
+                    currentDamage++;
+                }
+                if (tool != ItemStack.EMPTY) {
+                    tool.getItem().inventoryTick(tool, world, worker, worker.getCitizenInventoryHandler().findFirstSlotInInventoryWith(tool.getItem()), true);
+                }
                 setDelay(100);
             }
             else

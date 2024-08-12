@@ -95,10 +95,9 @@ public class CitizenSkillHandler implements ICitizenSkillHandler
             final int secondRoleModelLevel = roleModelB.getCitizenSkillHandler().getSkills().get(skill).getA();
             totalPoints += firstRoleModelLevel + secondRoleModelLevel;
         }
-        
-        if (colony.getWorld().getGameRules().getBoolean(CITIZEN_SKILL_GENETICS)) {
-            bonusPoints += (int) (totalPoints * 0.1);
-        }
+
+        float geneticRate = (float) (colony.getWorld().getGameRules().getInt(CITIZEN_SKILL_GENETICS) / 100);
+        bonusPoints += (int) (totalPoints * geneticRate);
 
         for (final Skill skill : Skill.values())
         {

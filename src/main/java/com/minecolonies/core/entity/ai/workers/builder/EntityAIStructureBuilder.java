@@ -183,7 +183,7 @@ public class EntityAIStructureBuilder extends AbstractEntityAIStructureWithWorkO
     @Override
     protected boolean mineBlock(@NotNull final BlockPos blockToMine, @NotNull final BlockPos safeStand)
     {
-        return mineBlock(blockToMine, safeStand, true, !IColonyManager.getInstance().getCompatibilityManager().isOre(world.getBlockState(blockToMine)), null);
+        return mineBlock(blockToMine, safeStand, true, false, !IColonyManager.getInstance().getCompatibilityManager().isOre(world.getBlockState(blockToMine)), null);
     }
 
     @Override

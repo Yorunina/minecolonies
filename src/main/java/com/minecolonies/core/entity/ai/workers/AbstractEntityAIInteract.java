@@ -141,7 +141,7 @@ public abstract class AbstractEntityAIInteract<J extends AbstractJob<?, J>, B ex
      */
     protected boolean mineBlock(@NotNull final BlockPos blockToMine, @NotNull final BlockPos safeStand)
     {
-        return mineBlock(blockToMine, safeStand, true, true, null);
+        return mineBlock(blockToMine, safeStand, true, true, false, null);
     }
 
     /**
@@ -160,6 +160,7 @@ public abstract class AbstractEntityAIInteract<J extends AbstractJob<?, J>, B ex
       @NotNull final BlockPos safeStand,
       final boolean damageTool,
       final boolean getDrops,
+      final boolean noDelay,
       final Runnable blockBreakAction)
     {
         final BlockState curBlockState = world.getBlockState(blockToMine);
@@ -176,7 +177,7 @@ public abstract class AbstractEntityAIInteract<J extends AbstractJob<?, J>, B ex
             return true;
         }
 
-        if (checkMiningLocation(blockToMine, safeStand))
+        if (checkMiningLocation(blockToMine, safeStand) && !noDelay)
         {
             //we have to wait for delay
             return false;
