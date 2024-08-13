@@ -490,22 +490,20 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         return success ? START_WORKING : DUMPING;
     }
 
-    private void moveToPositionByTeleport(BlockPos desired, Entity entity) {
-        Network.getNetwork()
-                .sendToTrackingEntity(new VanillaParticleMessage(worker.getX(), worker.getY(), worker.getZ(), ParticleTypes.INSTANT_EFFECT), worker);
-        worker.queueSound(SoundEvents.ENDERMAN_TELEPORT, worker.blockPosition(), 5, 0);
-
-        final BlockPos tpPos = BlockPosUtil.findAround(world, desired, 10, 10,
+    private boolean moveToPositionByTeleport(BlockPos desired, Entity entity) {
+        BlockPos tpPos = BlockPosUtil.findAround(world, desired, 8, 8,
                 (posworld, pos) -> SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos.below()), pos.below()) == SurfaceType.WALKABLE
                         && SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos), pos) == SurfaceType.DROPABLE
                         && SurfaceType.getSurfaceType(posworld, posworld.getBlockState(pos.above()), pos.above()) == SurfaceType.DROPABLE);
-        if (tpPos != null) {
-            entity.teleportTo(tpPos.getX(), tpPos.getY(), tpPos.getZ());
-        }
-
+        if (tpPos == null) return false;
+        Network.getNetwork()
+                .sendToTrackingEntity(new VanillaParticleMessage(worker.getX(), worker.getY(), worker.getZ(), ParticleTypes.INSTANT_EFFECT), worker);
+        worker.queueSound(SoundEvents.ENDERMAN_TELEPORT, worker.blockPosition(), 5, 0);
+        entity.teleportTo(tpPos.getX(), tpPos.getY(), tpPos.getZ());
         Network.getNetwork()
                 .sendToTrackingEntity(new VanillaParticleMessage(desired.getX(), desired.getY(), desired.getZ(), ParticleTypes.INSTANT_EFFECT), worker);
         worker.queueSound(SoundEvents.ENDERMAN_TELEPORT, desired, 5, 0);
+        return true;
     }
 
 
@@ -647,17 +645,10 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         if (currentTask == null)
         {
             // If there are no deliveries/pickups pending, just loiter around the warehouse.
-            BlockPos targetPosition = getAndCheckWareHouse().getPosition();
-            if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+            if (!worker.isWorkerAtSiteWithMove(getAndCheckWareHouse().getPosition(), MIN_DISTANCE_TO_WAREHOUSE))
             {
-                if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
-                    moveToPositionByTeleport(targetPosition, worker);
-                }
-                if (!worker.isWorkerAtSiteWithMove(targetPosition, MIN_DISTANCE_TO_WAREHOUSE))
-                {
-                    setDelay(WALK_DELAY);
-                    return START_WORKING;
-                }
+                setDelay(WALK_DELAY);
+                return START_WORKING;
             }
 
             if (!worker.getInventoryCitizen().isEmpty())
