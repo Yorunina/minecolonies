@@ -14,7 +14,10 @@ import com.minecolonies.api.util.InventoryUtils;
 import com.minecolonies.api.util.constant.Constants;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -46,6 +49,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 
+import static com.minecolonies.api.util.constant.Constants.MOD_ID;
+
 /**
  * Block for the shelves of the warehouse.
  */
@@ -71,6 +76,9 @@ public class BlockMinecoloniesRack extends AbstractBlockMinecoloniesRack<BlockMi
      * This blocks name.
      */
     private static final String BLOCK_NAME = "blockminecoloniesrack";
+
+    private final TagKey<Item> hideHutGui = new TagKey<Item>(Registries.ITEM, new ResourceLocation(MOD_ID, "hide_hut_gui"));
+
 
     /**
      * The resistance this block has.
@@ -235,6 +243,10 @@ public class BlockMinecoloniesRack extends AbstractBlockMinecoloniesRack<BlockMi
       final InteractionHand hand,
       final BlockHitResult ray)
     {
+        if (player.getMainHandItem().is(hideHutGui)) {
+            return InteractionResult.FAIL;
+        }
+
         final IColony colony = IColonyManager.getInstance().getColonyByPosFromWorld(worldIn, pos);
         final BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
