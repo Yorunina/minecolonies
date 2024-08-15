@@ -28,12 +28,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -68,6 +70,7 @@ import java.util.Map;
 
 import static com.ldtteam.structurize.blockentities.interfaces.IBlueprintDataProviderBE.*;
 import static com.minecolonies.api.util.constant.BuildingConstants.DEACTIVATED;
+import static com.minecolonies.api.util.constant.Constants.MOD_ID;
 import static com.minecolonies.api.util.constant.TranslationConstants.*;
 
 /**
@@ -108,6 +111,8 @@ public abstract class AbstractBlockHut<B extends AbstractBlockHut<B>> extends Ab
      * The default resistance (against explosions).
      */
     public static final float RESISTANCE = Float.POSITIVE_INFINITY;
+
+    private final TagKey<Item> hideHutGui = new TagKey<Item>(Registries.ITEM, new ResourceLocation(MOD_ID, "hide_hut_gui"));
 
     /**
      * Smaller shape.
@@ -210,6 +215,10 @@ public abstract class AbstractBlockHut<B extends AbstractBlockHut<B>> extends Ab
         {
             if (hand == InteractionHand.OFF_HAND)
             {
+                return InteractionResult.FAIL;
+            }
+
+            if (player.getItemInHand(hand).is(hideHutGui)) {
                 return InteractionResult.FAIL;
             }
 

@@ -687,10 +687,10 @@ public class Tree
         }
 
         // Check if the new log fits the Tree's base log type
-        if (!isBlockPartOfSameTree(world.getBlockState(log), world.getBlockState(location)))
-        {
-            return;
-        }
+//        if (!isBlockPartOfSameTree(world.getBlockState(log), world.getBlockState(location)))
+//        {
+//            return;
+//        }
 
         if (log.getY() < location.getY())
         {
