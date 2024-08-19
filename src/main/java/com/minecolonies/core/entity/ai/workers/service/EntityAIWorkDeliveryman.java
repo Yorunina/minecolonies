@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 import static com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState.*;
 import static com.minecolonies.api.research.util.ResearchConstants.ENDER_POSTMAN;
 import static com.minecolonies.api.util.constant.CitizenConstants.DEFAULT_RANGE_FOR_DELAY;
+import static com.minecolonies.api.util.constant.CitizenConstants.TELEPORT_RANGE_FOR_DELAY;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.StatisticsConstants.ITEMS_DELIVERED;
 import static com.minecolonies.api.util.constant.TranslationConstants.*;
@@ -167,15 +168,16 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
 
         final BlockPos pickupTarget = currentTask.getRequester().getLocation().getInDimensionLocation();
 
-        if (pickupTarget != BlockPos.ZERO && !EntityUtils.isLivingAtSite(worker, pickupTarget.getX(), pickupTarget.getY(), pickupTarget.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+        if (pickupTarget != BlockPos.ZERO && !EntityUtils.isLivingAtSite(worker, pickupTarget.getX(), pickupTarget.getY(), pickupTarget.getZ(), TELEPORT_RANGE_FOR_DELAY))
         {
             if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
                 moveToPositionByTeleport(pickupTarget, worker);
             }
-            if (!worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
-            {
-                return PICKUP;
-            }
+        }
+
+        if (!worker.isWorkerAtSiteWithMove(pickupTarget, MIN_DISTANCE_TO_WAREHOUSE))
+        {
+            return PICKUP;
         }
 
         final IBuilding pickupBuilding = building.getColony().getBuildingManager().getBuilding(pickupTarget);
@@ -311,16 +313,17 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         }
 
         BlockPos targetPosition = warehouse.getPosition();
-        if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+        if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), TELEPORT_RANGE_FOR_DELAY))
         {
             if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
                 moveToPositionByTeleport(targetPosition, worker);
             }
-            if (!worker.isWorkerAtSiteWithMove(targetPosition, MIN_DISTANCE_TO_WAREHOUSE))
-            {
-                setDelay(WALK_DELAY);
-                return DUMPING;
-            }
+        }
+
+        if (!worker.isWorkerAtSiteWithMove(targetPosition, MIN_DISTANCE_TO_WAREHOUSE))
+        {
+            setDelay(WALK_DELAY);
+            return DUMPING;
         }
 
         warehouse.getTileEntity().dumpInventoryIntoWareHouse(worker.getInventoryCitizen());
@@ -366,16 +369,17 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
         }
         BlockPos targetLocation = targetBuildingLocation.getInDimensionLocation();
 
-        if (!EntityUtils.isLivingAtSite(worker, targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), MIN_DISTANCE_TO_WAREHOUSE))
+        if (!EntityUtils.isLivingAtSite(worker, targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), TELEPORT_RANGE_FOR_DELAY))
         {
             if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
                 moveToPositionByTeleport(targetLocation, worker);
             }
-            if (!worker.isWorkerAtSiteWithMove(targetLocation, MIN_DISTANCE_TO_WAREHOUSE))
-            {
-                setDelay(WALK_DELAY);
-                return DELIVERY;
-            }
+        }
+
+        if (!worker.isWorkerAtSiteWithMove(targetLocation, MIN_DISTANCE_TO_WAREHOUSE))
+        {
+            setDelay(WALK_DELAY);
+            return DELIVERY;
         }
 
         final BlockEntity tileEntity = world.getBlockEntity(targetLocation);
@@ -567,15 +571,16 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
 
 
         BlockPos targetPosition = location.getInDimensionLocation();
-        if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), DEFAULT_RANGE_FOR_DELAY))
+        if (!EntityUtils.isLivingAtSite(worker, targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), TELEPORT_RANGE_FOR_DELAY))
         {
             if (worker.getCitizenColonyHandler().getColony().getResearchManager().getResearchEffects().getEffectStrength(ENDER_POSTMAN) > 0) {
                 moveToPositionByTeleport(targetPosition, worker);
             }
-            if (walkToBlock(location.getInDimensionLocation()))
-            {
-                return PREPARE_DELIVERY;
-            }
+        }
+
+        if (walkToBlock(targetPosition))
+        {
+            return PREPARE_DELIVERY;
         }
 
         if (getInventory().isFull())
@@ -583,7 +588,7 @@ public class EntityAIWorkDeliveryman extends AbstractEntityAIInteract<JobDeliver
             return DUMPING;
         }
 
-        final BlockEntity tileEntity = world.getBlockEntity(location.getInDimensionLocation());
+        final BlockEntity tileEntity = world.getBlockEntity(targetPosition);
         job.addConcurrentDelivery(nextPickUp.getId());
         if (gatherIfInTileEntity(tileEntity, nextPickUp.getRequest().getStack()))
         {

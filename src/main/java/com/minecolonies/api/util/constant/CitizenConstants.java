@@ -153,6 +153,8 @@ public final class CitizenConstants
      */
     public static final int DEFAULT_RANGE_FOR_DELAY = 4;
 
+    public static final int TELEPORT_RANGE_FOR_DELAY = 12;
+
     /**
      * The number of actions done before item dump.
      */
