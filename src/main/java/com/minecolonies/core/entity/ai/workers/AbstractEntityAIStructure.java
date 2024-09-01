@@ -595,6 +595,7 @@ public abstract class AbstractEntityAIStructure<J extends AbstractJobStructure<?
         final BlockState state = handler.getWorld().getBlockState(pos);
         return state.getBlock() instanceof IBuilderUndestroyable
                  || state.getBlock() == Blocks.BEDROCK
+                 || state.getBlock() == Blocks.SNOW
                  || state.isAir()
                  || !state.getFluidState().isEmpty();
     }
