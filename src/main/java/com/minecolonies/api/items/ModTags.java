@@ -62,6 +62,8 @@ public class ModTags
     public static final TagKey<Item> excludedFood = ItemTags.create(TagConstants.EXCLUDED_FOOD);
 
     public static final TagKey<Item> breakable_ore = ItemTags.create(TagConstants.BREAKABLE_ORE);
+
+    public static final TagKey<Item> smeltable_item = ItemTags.create(TagConstants.SMELTABLE_ITEM);
     public static final TagKey<Item> raw_ore = ItemTags.create(TagConstants.RAW_ORE);
 
     public static final TagKey<EntityType<?>> hostile = TagKey.create(Registries.ENTITY_TYPE, TagConstants.HOSTILE);

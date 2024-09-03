@@ -714,7 +714,7 @@ public class CompatibilityManager implements ICompatibilityManager
      */
     private void discoverOres(final ItemStack stack)
     {
-        if (stack.is(Tags.Items.ORES) || stack.is(ModTags.breakable_ore) || stack.is(ModTags.raw_ore))
+        if (stack.is(Tags.Items.ORES) || stack.is(ModTags.breakable_ore) || stack.is(ModTags.raw_ore) || stack.is(ModTags.smeltable_item))
         {
             if (stack.getItem() instanceof BlockItem)
             {
