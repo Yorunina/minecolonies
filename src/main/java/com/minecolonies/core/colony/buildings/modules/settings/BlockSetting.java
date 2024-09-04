@@ -16,7 +16,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -136,7 +135,7 @@ public class BlockSetting implements ISetting<BlockItem>
 
               return block.getShape(state, new SingleStateBlockGetter(state), BlockPos.ZERO, CollisionContext.empty()).equals(Shapes.block()) && state.blocksMotion();
           }, (stack, qty) -> {
-              if (stack.isEmpty() && stack.getItem() != Items.AIR)
+              if (stack.isEmpty())
               {
                   return;
               }
