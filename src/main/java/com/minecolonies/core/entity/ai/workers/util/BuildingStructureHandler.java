@@ -17,12 +17,13 @@ import com.minecolonies.core.colony.jobs.AbstractJobStructure;
 import com.minecolonies.core.entity.ai.workers.AbstractEntityAIStructure;
 import com.minecolonies.core.util.WorkerUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
@@ -72,6 +74,8 @@ public class BuildingStructureHandler<J extends AbstractJobStructure<?, J>, B ex
      * The current structure stage.
      */
     private int stage;
+
+    private final MobEffect CREATIVE_BUILDER_EFFECT = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("kubejs:creative_builder"));
 
     /**
      * The minecolonies AI specific creative structure placer.
@@ -284,6 +288,9 @@ public class BuildingStructureHandler<J extends AbstractJobStructure<?, J>, B ex
     public boolean isCreative()
     {
         if (getWorld().getGameRules().getBoolean(BUILDER_INF_RESOURCES)) {
+            return true;
+        }
+        if (Objects.nonNull(CREATIVE_BUILDER_EFFECT) && structureAI.getWorker().hasEffect(CREATIVE_BUILDER_EFFECT)) {
             return true;
         }
         return Constants.BUILDER_INF_RESOURECES;
