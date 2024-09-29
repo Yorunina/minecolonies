@@ -265,7 +265,7 @@ public class CitizenHappinessHandler implements ICitizenHappinessHandler
                 workers++;
             }
         }
-        return Math.min(guards / (workers * 2 / 3), 2);
+        return Math.min(4 * guards / workers, 2);
     }
 
     /**

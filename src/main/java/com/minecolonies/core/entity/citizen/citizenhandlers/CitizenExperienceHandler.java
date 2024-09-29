@@ -86,7 +86,7 @@ public class CitizenExperienceHandler implements ICitizenExperienceHandler
         double localXp = xp * buildingXPModifier;
         final double saturation = citizen.getCitizenData().getSaturation();
         final int intelligenceLevel = data.getCitizenSkillHandler().getLevel(Skill.Intelligence);
-        localXp += localXp * (intelligenceLevel / 100.0);
+        localXp += localXp * (intelligenceLevel / 50.0);
 
         if (saturation <= 0)
         {
